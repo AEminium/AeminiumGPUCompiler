@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="AeminiumGPU" basedir="." default="main">
+	
+	<property name="src.dir"     value="src"/>
+	<property name="build.dir"   value="bin"/>
+	<property name="lib.dir"   value="lib"/>
+	<property name ="main-class" value="code.SimpleMap" />
+	
+	
+	<property name="spooned.dir"     value="spooned"/>
+	<property name="compiler.src.dir"   value="compiler-src"/>
+	<property name="compiler.build.dir"   value="compiler"/>
+	<property name="compiler.lib.dir"   value="compiler-lib"/>
+	
+	<path id="classpath">
+		<path refid="compiler.classpath" />
+		<fileset dir="${lib.dir}" includes="**/*.jar"/>
+	</path>
+	
+	<path id="compiler.classpath">  
+		<pathelement location="${compiler.build.dir}" />
+		<fileset dir="${compiler.lib.dir}" includes="**/*.jar"/>
+		<fileset dir="${lib.dir}" includes="**/*.jar"/>
+	</path>
+	
+	<target name="compile-compiler">  
+		<mkdir dir="${compiler.build.dir}"/>  
+		<javac srcdir="${compiler.src.dir}" destdir="${compiler.build.dir}" classpathref="compiler.classpath" />
+	</target>
+	
+	<target name="precompile" depends="compile-compiler">
+		<!-- define spoon task -->
+		<taskdef name="spoon" classname="spoon.SpoonTask" classpathref="compiler.classpath"/>
+
+		<spoon classpathref="compiler.classpath" verbose= "true">
+		    <sourceSet 		dir="${src.dir}" />
+		    <templateset 	dir="${compiler.src.dir}" includes="template/" />
+			<processor 		type="processing.MapLambdaProcessor" />
+		</spoon>
+	</target>
+	
+	<target name="compile" depends="precompile">  
+		<mkdir dir="${build.dir}"/>  
+		<javac srcdir="${spooned.dir}" destdir="${build.dir}" classpathref="classpath" />
+	</target>
+	
+	<target name="main" depends="compile"></target>
+		
+    <target name="run" depends="compile">  
+        <java fork="true" classname="${main-class}">
+            <classpath>  
+            	<path location="${build.dir}" />
+                <path refid="classpath"/>  
+            </classpath>  
+        </java>  
+    </target>  
+	
+	
+</project>
