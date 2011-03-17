@@ -66,7 +66,6 @@ import spoon.reflect.reference.CtReference;
 import spoon.reflect.reference.CtTypeParameterReference;
 import spoon.reflect.reference.CtTypeReference;
 import spoon.reflect.visitor.CtVisitor;
-import spoon.reflect.visitor.DefaultJavaPrettyPrinter;
 
 public class OpenCLCodeGeneratorVisitor implements CtVisitor {
 	
