@@ -6,6 +6,6 @@
 	<classpathentry kind="lib" path="lib/AeminiumGPU.jar"/>
 	<classpathentry kind="lib" path="lib/javacl-1.0-beta-6-shaded.jar"/>
 	<classpathentry kind="lib" path="lib/javacl-demos-1.0-beta-6-shaded.jar"/>
-	<classpathentry kind="lib" path="compiler-lib/spoon-core-1.4-jar-with-dependencies.jar"/>
+	<classpathentry kind="lib" path="compiler-lib/spoon-core-1.4-jar-with-dependencies.jar" sourcepath="/Users/alcides/Code/Support/spoon-core-1.4-sources.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

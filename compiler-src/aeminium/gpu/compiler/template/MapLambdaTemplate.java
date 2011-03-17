@@ -1,11 +1,10 @@
-package template;
+package aeminium.gpu.compiler.template;
 
 import spoon.template.Local;
 import spoon.template.Parameter;
 import spoon.template.Template;
 
 public class MapLambdaTemplate implements Template {
-	
 	
 	@Parameter
 	String _code_;

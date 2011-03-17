@@ -14,6 +14,9 @@ public class SimpleMap {
 
 			@Override
 			public Integer call(Integer input) {
+				for (int i = 0; i < 10; i++) {
+					input += i;
+				}
 				return input;
 			}
 			

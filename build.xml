@@ -32,10 +32,10 @@
 		<!-- define spoon task -->
 		<taskdef name="spoon" classname="spoon.SpoonTask" classpathref="compiler.classpath"/>
 
-		<spoon classpathref="compiler.classpath" verbose= "true">
+		<spoon classpathref="compiler.classpath" verbose="true">
 		    <sourceSet 		dir="${src.dir}" />
-		    <templateset 	dir="${compiler.src.dir}" includes="template/" />
-			<processor 		type="processing.MapLambdaProcessor" />
+		    <templateset 	dir="${compiler.src.dir}/aeminium/gpu/compiler/template" />
+			<processor 		type="aeminium.gpu.compiler.processing.MapLambdaProcessor" />
 		</spoon>
 	</target>
 	
