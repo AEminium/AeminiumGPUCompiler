@@ -1,0 +1,16 @@
+#!/bin/sh
+
+# This script compiles AEminiumGPU code and generates OpenCL code.
+
+# Intermediate code is placed in "spooned" folder by default. Can be overridden with "-o new_folder" switch.
+
+
+COMPILE_LIB="compiler-lib/spoon-core-1.4-jar-with-dependencies.jar"
+CLASS_LIB="lib/AeminiumGPU.jar:lib/javacl-1.0-beta-6-shaded.jar:lib/javacl-demos-1.0-beta-6-shaded.jar"
+COMPILER_SRC="compiler/"
+EXTRA_LIB=""
+
+java -cp "$COMPILE_LIB:$CLASS_LIB:$COMPILER_SRC:$EXTRA_LIB" \
+	aeminium.gpu.compiler.launcher.AeminiumGPUCompilerLauncher \
+	-i $1
+javac -cp "$CLASS_LIB:$EXTRA_LIB" spooned/**/*.java -d bin
