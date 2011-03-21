@@ -50,5 +50,26 @@ public class TestMapProcessor extends TestCase {
 		compareJavaWithOpenCL("return (input % 2 == 0) ? 1 : 2;", "return (input % 2) == 0 ? 1 : 2;");
     }
 	
+	@Test
+    public void testIfStmt() throws Exception {
+		compareJavaWithOpenCL(
+				"if (input > 10) { int k = input-10; return k; } else return 1;", 
+				"if (input > 10) {\nint k = input - 10;\nreturn k;\n} else\nreturn 1;");
+    }
+	
+	@Test
+    public void testForLoop() throws Exception {
+		compareJavaWithOpenCL(
+				"int t=input; for(int i=0;i<10;i++) { t += i; } return t;", 
+				"int t = input;\nfor (int i = 0 ; i < 10 ; i++) {\nt += i;\n}\nreturn t;");
+    }
+	
+	@Test
+	public void testWhileLoop() throws Exception {
+		compareJavaWithOpenCL(
+				"int t=input; while(t < 10) { t *= 2; } return t;", 
+				"int t = input;\nwhile (t < 10) {\nt *= 2;\n}\nreturn t;");
+    }
+	
 	
 }
