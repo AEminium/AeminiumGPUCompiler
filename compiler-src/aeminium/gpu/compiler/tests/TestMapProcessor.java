@@ -23,32 +23,31 @@ public class TestMapProcessor extends TestCase {
         p = new MapLambdaProcessor();
     }
 	
-	@Test
-    public void testStaticReturn() throws Exception {
-        String java = "return 1;";
-        CtFile ctsrc = new CtFile4Map(java);
+	
+	public void compareJavaWithOpenCL(String java, String opencl) throws Exception {
+		CtFile ctsrc = new CtFile4Map(java);
         CtClass res = (CtClass) ProcessorTestHelper.transform(p, ctsrc);
         
         CtClass lambda = MapTestHelper.getLambda(res);
         assertEquals(2, lambda.getMethods().size());
         
         String cl = MapTestHelper.getOpenCL(lambda);
-        assertTrue(cl.contains("return 1;"));
-        
+        assertTrue(cl.contains(opencl));
+	}
+	
+	@Test
+    public void testStaticReturn() throws Exception {
+        compareJavaWithOpenCL("return 1;", "return 1;");
     }
 	
 	@Test
     public void testPlusReturn() throws Exception {
-        String java = "return 1 + input;";
-        CtFile ctsrc = new CtFile4Map(java);
-        CtClass res = (CtClass) ProcessorTestHelper.transform(p, ctsrc);
-        
-        CtClass lambda = MapTestHelper.getLambda(res);
-        assertEquals(2, lambda.getMethods().size());
-        
-        String cl = MapTestHelper.getOpenCL(lambda);
-        assertTrue(cl.contains("return 1 + input;"));
-        
+		compareJavaWithOpenCL("return 1 + input;", "return 1 + input;");
+    }
+	
+	@Test
+    public void testEvenReturn() throws Exception {
+		compareJavaWithOpenCL("return (input % 2 == 0) ? 1 : 2;", "return (input % 2) == 0 ? 1 : 2;");
     }
 	
 	
