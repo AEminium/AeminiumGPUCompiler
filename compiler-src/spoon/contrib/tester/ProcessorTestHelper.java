@@ -38,7 +38,9 @@ public class ProcessorTestHelper {
     }
 
     public static CtSimpleType<?> transform(Processor<?> p, CtFile src) throws Exception {
-        Factory factory = new Factory(new DefaultCoreFactory(), new StandardEnvironment());
+    	Environment env = new StandardEnvironment();
+    	env.setVerbose(true);
+        Factory factory = new Factory(new DefaultCoreFactory(), env);
         CtSimpleType<?> result = transform(p, factory, src);
         return result;
     }

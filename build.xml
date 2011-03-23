@@ -51,7 +51,8 @@
             <classpath>  
             	<path location="${build.dir}" />
                 <path refid="classpath"/>  
-            </classpath>  
+            </classpath>
+        	<!-- <jvmarg value="-Xrunhprof:cpu=samples,file=log.txt,depth=3"/> -->
         </java>  
     </target>  
 	

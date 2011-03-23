@@ -33,6 +33,7 @@ public class TestMapProcessor extends TestCase {
         
         String cl = MapTestHelper.getOpenCL(lambda);
         assertTrue(cl.contains(opencl));
+        
 	}
 	
 	@Test
@@ -71,5 +72,11 @@ public class TestMapProcessor extends TestCase {
 				"int t = input;\nwhile (t < 10) {\nt *= 2;\n}\nreturn t;");
     }
 	
+	@Test
+	public void testMathSin() throws Exception {
+		compareJavaWithOpenCL(
+				"return (int) Math.sin(input);", 
+				"return (int) sin(input);");
+    }
 	
 }

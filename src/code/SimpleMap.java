@@ -1,23 +1,20 @@
 package code;
 
-import aeminium.gpu.lists.IntList;
+import aeminium.gpu.lists.DoubleList;
 import aeminium.gpu.lists.PList;
 import aeminium.gpu.operations.Lambda;
 
 public class SimpleMap {
 	public static void main(String[] args) {
-		IntList in = new IntList();
-		in.add(1);
-		in.add(2);
-		in.add(5);
-		PList<Integer> out = in.map(new Lambda<Integer, Integer>() {
+		DoubleList in = new DoubleList();
+		in.add(1.0);
+		in.add(2.0);
+		in.add(5.0);
+		PList<Float> out = in.map(new Lambda<Double, Float>() {
 
 			@Override
-			public Integer call(Integer input) {
-				for (int i = 0; i < 10; i++) {
-					input += i;
-				}
-				return input;
+			public Float call(Double input) {
+				return (float) Math.sin(input);
 			}
 			
 		});

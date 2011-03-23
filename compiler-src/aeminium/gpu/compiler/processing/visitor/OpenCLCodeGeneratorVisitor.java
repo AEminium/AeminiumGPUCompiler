@@ -3,8 +3,6 @@ package aeminium.gpu.compiler.processing.visitor;
 import java.lang.annotation.Annotation;
 import java.util.List;
 
-import aeminium.gpu.compiler.processing.utils.CodeGenerationContext;
-
 import spoon.processing.Environment;
 import spoon.reflect.code.BinaryOperatorKind;
 import spoon.reflect.code.CtArrayAccess;
@@ -66,6 +64,10 @@ import spoon.reflect.reference.CtReference;
 import spoon.reflect.reference.CtTypeParameterReference;
 import spoon.reflect.reference.CtTypeReference;
 import spoon.reflect.visitor.CtVisitor;
+import aeminium.gpu.compiler.processing.opencl.CLType;
+import aeminium.gpu.compiler.processing.opencl.MathConverter;
+import aeminium.gpu.compiler.processing.opencl.MathFunction;
+import aeminium.gpu.compiler.processing.utils.CodeGenerationContext;
 
 public class OpenCLCodeGeneratorVisitor implements CtVisitor {
 	
@@ -696,11 +698,48 @@ public class OpenCLCodeGeneratorVisitor implements CtVisitor {
 		cancelConversion(intrface);
 	}
 
-
+	@SuppressWarnings("rawtypes")
 	@Override
 	public <T> void visitCtInvocation(CtInvocation<T> invocation) {
-		// TODO Math.stuff() and functions
-		cancelConversion(invocation);
+		CtExecutableReference<T> ex = invocation.getExecutable();
+		
+		String qualifiedName = ex.getDeclaringType().getQualifiedName();
+		String methodname = ex.getSimpleName();
+		
+		if (MathConverter.hasMethod(qualifiedName, methodname)) {
+			MathFunction f = MathConverter.getMathFunction(qualifiedName, methodname);
+			
+			enterCtExpression(invocation);
+			
+			// Ensure OpenCL and Java compability
+			write(CastHelper.getReturnTypeCast(f.getReturnType(), ex.getType()));
+			
+			write(f.getOpenCLName());
+			
+			write("(");
+			boolean remove = false; 
+			int argIndex = 0;
+			CLType[] innerCasts = f.getArgumentTypes();
+			for (CtExpression o: invocation.getArguments()) {
+				
+				if (innerCasts.length > argIndex) {
+					// Check arguments for required casts
+					write(CastHelper.getReturnTypeCast(innerCasts[argIndex], o.getType()));
+				}
+				
+				o.accept(this);
+				remove = true;
+				write(", ");
+				argIndex++;
+			}
+			if (remove) {
+				removeLastChar();
+			}
+			write(")");
+			exitCtExpression(invocation);
+		} else {
+			cancelConversion(invocation);
+		}
 	}
 
 
