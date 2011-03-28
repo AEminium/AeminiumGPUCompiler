@@ -23,8 +23,7 @@ public class TestMapProcessor extends TestCase {
         p = new MapLambdaProcessor();
     }
 	
-	
-	public void compareJavaWithOpenCL(String java, String opencl) throws Exception {
+	public void compareJavaWithOpenCL(String java, String... openclS) throws Exception {
 		CtFile ctsrc = new CtFile4Map(java);
         CtClass res = (CtClass) ProcessorTestHelper.transform(p, ctsrc);
         
@@ -32,8 +31,11 @@ public class TestMapProcessor extends TestCase {
         assertEquals(2, lambda.getMethods().size());
         
         String cl = MapTestHelper.getOpenCL(lambda);
-        assertTrue(cl.contains(opencl));
         
+		for(String opencl : openclS) {
+			System.out.println("Testing for" + opencl);
+			assertTrue(cl.contains(opencl));
+		}
 	}
 	
 	@Test
@@ -75,8 +77,29 @@ public class TestMapProcessor extends TestCase {
 	@Test
 	public void testMathSin() throws Exception {
 		compareJavaWithOpenCL(
-				"return (int) Math.sin(input);", 
-				"return (int) sin(input);");
+				"return (float) Math.sin(input);", 
+				"return ((float)(sin((double) input)))");
     }
 	
+	@Test
+	public void testMathCos() throws Exception {
+		compareJavaWithOpenCL(
+				"return (float) Math.cos(input);", 
+				"return ((float)(cos((double) input)));");
+    }
+	
+	@Test
+	public void testMathHypot() throws Exception {
+		compareJavaWithOpenCL(
+				"return (float) Math.hypot(input, input);", 
+				"return ((float)(hypot((double) input, (double) input)));");
+    }
+	
+	@Test
+	public void testArrayDecl() throws Exception {
+		compareJavaWithOpenCL(
+				"int[] arr = new int[] {1,2,3}; arr[1] = 5; return input;", 
+				"int arr = new int[]{ 1 , 2 , 3 };",
+				"arr[1] = 5;");
+    }
 }

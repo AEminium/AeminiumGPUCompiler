@@ -35,7 +35,7 @@ public class MathConverter {
 		register(sameFunction("log1p", CLType.FLOAT_OR_DOUBLE));
 		register(sameFunction("max", CLType.INT_OR_FLOAT_OR_DOUBLE));
 		register(sameFunction("min", CLType.INT_OR_FLOAT_OR_DOUBLE));
-		// TODO: pown
+		// TODO: Possible Optimization for Pown
 		register(sameFunction2P("pow", CLType.FLOAT_OR_DOUBLE));
 		register(sameFunction("round", CLType.FLOAT_OR_DOUBLE));
 		register(sameFunction("rint", CLType.FLOAT_OR_DOUBLE));

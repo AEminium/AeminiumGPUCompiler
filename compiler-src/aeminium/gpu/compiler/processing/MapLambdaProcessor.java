@@ -34,10 +34,10 @@ public class MapLambdaProcessor<T>  extends AbstractProcessor<CtMethod<T>>{
 	private void checkAndReplaceMethodBody(CtMethod<T> target) {
 		CtBlock<T> body = target.getBody();
 		checkAndGenerateExpr(body);
-		
+		String clString = clCode.toString();
 		if (canSubstitute) {
-		
-			Template t = new MapLambdaTemplate(clCode.toString());
+			// TODO: Compile code.
+			Template t = new MapLambdaTemplate(clString);
 			Substitution.insertAllMethods(target.getParent(CtClass.class), t);
 		}
 	}

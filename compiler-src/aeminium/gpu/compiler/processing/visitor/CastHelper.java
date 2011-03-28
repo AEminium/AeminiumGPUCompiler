@@ -17,7 +17,7 @@ public class CastHelper {
 	public static String getReturnType(CLType ct, CtTypeReference jt) {
 		switch (ct) {
 		case INT:
-			// TODO - int function
+			// TODO - Cast for Math functions with int!
 			break;
 		case FLOAT_OR_DOUBLE:
 			if (!jt.getSimpleName().equals("double") && !jt.getSimpleName().equals("float")) {

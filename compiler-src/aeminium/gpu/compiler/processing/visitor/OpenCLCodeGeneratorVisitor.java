@@ -426,15 +426,16 @@ public class OpenCLCodeGeneratorVisitor implements CtVisitor {
 	@Override
 	public <T, E extends CtExpression<?>> void visitCtArrayAccess(
 			CtArrayAccess<T, E> arrayAccess) {
-		
-		
+		scan(arrayAccess.getTarget());
+		write("[");
+		scan(arrayAccess.getIndexExpression());
+		write("]");
 	}
 
 
 	@Override
 	public <T> void visitCtArrayTypeReference(CtArrayTypeReference<T> reference) {
 		scan(reference.getComponentType());
-		write("[]");
 	}
 
 	
