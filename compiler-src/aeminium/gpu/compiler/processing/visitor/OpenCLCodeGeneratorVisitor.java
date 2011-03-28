@@ -64,6 +64,7 @@ import spoon.reflect.reference.CtReference;
 import spoon.reflect.reference.CtTypeParameterReference;
 import spoon.reflect.reference.CtTypeReference;
 import spoon.reflect.visitor.CtVisitor;
+import aeminium.gpu.compiler.processing.opencl.BoxedTypes;
 import aeminium.gpu.compiler.processing.opencl.CLType;
 import aeminium.gpu.compiler.processing.opencl.MathConverter;
 import aeminium.gpu.compiler.processing.opencl.MathFunction;
@@ -73,12 +74,14 @@ public class OpenCLCodeGeneratorVisitor implements CtVisitor {
 	
 	private boolean isPossible = true;
 	
+	protected String input_var;
 	protected Environment env;
 	protected CodeGenerationContext context = new CodeGenerationContext();
 	private StringBuffer sbf = new StringBuffer();
 	
-	public OpenCLCodeGeneratorVisitor(Environment e) {
+	public OpenCLCodeGeneratorVisitor(Environment e, String var) {
 		env = e;
+		input_var = var;
 	}
 	
 	/* Wanted Methods */
@@ -603,10 +606,19 @@ public class OpenCLCodeGeneratorVisitor implements CtVisitor {
 	}
 
 
+	@SuppressWarnings("rawtypes")
 	@Override
 	public <T> void visitCtFieldAccess(CtFieldAccess<T> fieldAccess) {
 		// TODO: Implement Math stuff.
-		cancelConversion(fieldAccess);
+		CtFieldReference var = fieldAccess.getVariable();
+		
+		if (MathConverter.hasConstant(var.getQualifiedName())) {
+			write(MathConverter.getConstant(var.getQualifiedName()));
+		} else if (var.isFinal()) { 
+			scan(var.getDeclaration().getDefaultExpression());
+		} else {
+			cancelConversion(fieldAccess);
+		}
 	}
 
 
@@ -837,7 +849,13 @@ public class OpenCLCodeGeneratorVisitor implements CtVisitor {
 
 	@Override
 	public <T> void visitCtNewClass(CtNewClass<T> newClass) {
-		cancelConversion(newClass);
+		String kl = newClass.getExecutable().getDeclaringType().getQualifiedName();
+		
+		if (BoxedTypes.hasClass(kl)) {
+			scan(newClass.getArguments().get(0));
+		} else {
+			cancelConversion(newClass);
+		}
 	}
 
 
@@ -878,8 +896,11 @@ public class OpenCLCodeGeneratorVisitor implements CtVisitor {
 
 	@Override
 	public <T> void visitCtParameterReference(CtParameterReference<T> reference) {
-		// TODO: input
-		write(reference.getSimpleName());
+		if (reference.getSimpleName().equals(input_var)) {
+			write("input");
+		} else {
+			write(reference.getSimpleName());	
+		}
 	}
 
 
@@ -974,7 +995,7 @@ public class OpenCLCodeGeneratorVisitor implements CtVisitor {
 	@Override
 	public <T> void visitCtVariableAccess(CtVariableAccess<T> variableAccess) {
 		enterCtExpression(variableAccess);
-		write(variableAccess.getVariable().getSimpleName());
+		scan(variableAccess.getVariable());
 		exitCtExpression(variableAccess);
 		
 	}

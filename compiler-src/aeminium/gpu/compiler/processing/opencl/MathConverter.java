@@ -5,7 +5,8 @@ import java.util.HashMap;
 public class MathConverter {
 	private static String SEP = "#";
 	
-	private static HashMap<String,MathFunction> conversion = new HashMap<String,MathFunction>();
+	private static HashMap<String,MathFunction> functions = new HashMap<String,MathFunction>();
+	private static HashMap<String,String> constants = new HashMap<String,String>();
 	
 	private static MathFunction sameFunction(String name, CLType t) {
 		return new MathFunction("java.lang.Math", name, name, t, new CLType[] {t});
@@ -18,6 +19,9 @@ public class MathConverter {
 	}
 	
 	static {
+		constants.put("java.lang.Math#PI", new Double(Math.PI).toString()); // M_PI_F
+		constants.put("java.lang.Math#E", new Double(Math.E).toString()); // M_E_F
+		
 		register(sameFunction("acos", CLType.FLOAT_OR_DOUBLE));
 		register(sameFunction("asin", CLType.FLOAT_OR_DOUBLE));
 		register(sameFunction("atan", CLType.FLOAT_OR_DOUBLE));
@@ -50,7 +54,7 @@ public class MathConverter {
 	}
 	
 	private static void register(MathFunction f) {
-		conversion.put(makeKey(f), f);
+		functions.put(makeKey(f), f);
 	}
 	
 	private static String makeKey(MathFunction f) {
@@ -62,11 +66,19 @@ public class MathConverter {
 	}
 	
 	public static boolean hasMethod(String qualifiedName, String method) {
-		return conversion.containsKey(makeKey(qualifiedName, method));
+		return functions.containsKey(makeKey(qualifiedName, method));
 	}
 	
 	public static MathFunction getMathFunction(String qualifiedName, String method) {
-		return conversion.get(makeKey(qualifiedName, method));
+		return functions.get(makeKey(qualifiedName, method));
+	}
+	
+	public static boolean hasConstant(String qualified) {
+		return constants.containsKey(qualified);
+	}
+
+	public static String getConstant(String qualified) {
+		return constants.get(qualified);
 	}
 	
 }

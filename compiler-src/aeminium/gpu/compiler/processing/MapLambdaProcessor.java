@@ -19,7 +19,7 @@ public class MapLambdaProcessor<T>  extends AbstractProcessor<CtMethod<T>>{
 	@Override
 	public void process(CtMethod<T> target) {
 		if (target.getSimpleName().equals("call")) {
-			
+
 			checkAndReplaceMethodBody(target);
 			
 			if (canSubstitute) {
@@ -33,18 +33,19 @@ public class MapLambdaProcessor<T>  extends AbstractProcessor<CtMethod<T>>{
 	
 	private void checkAndReplaceMethodBody(CtMethod<T> target) {
 		CtBlock<T> body = target.getBody();
-		checkAndGenerateExpr(body);
-		String clString = clCode.toString();
+		String input_var = target.getParameters().get(0).getSimpleName();
+		checkAndGenerateExpr(body, input_var);
 		if (canSubstitute) {
 			// TODO: Compile code.
+			String clString = clCode.toString();
 			Template t = new MapLambdaTemplate(clString);
 			Substitution.insertAllMethods(target.getParent(CtClass.class), t);
 		}
 	}
 	
-	private void checkAndGenerateExpr(CtElement expr) {
+	private void checkAndGenerateExpr(CtElement expr, String input_var) {
 		
-		OpenCLCodeGeneratorVisitor gen = new OpenCLCodeGeneratorVisitor(getEnvironment());
+		OpenCLCodeGeneratorVisitor gen = new OpenCLCodeGeneratorVisitor(getEnvironment(), input_var);
 		expr.accept(gen);
 		
 		if (gen.canBeGenerated()) {
