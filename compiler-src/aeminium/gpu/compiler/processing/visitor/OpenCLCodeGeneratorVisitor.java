@@ -609,12 +609,11 @@ public class OpenCLCodeGeneratorVisitor implements CtVisitor {
 	@SuppressWarnings("rawtypes")
 	@Override
 	public <T> void visitCtFieldAccess(CtFieldAccess<T> fieldAccess) {
-		// TODO: Implement Math stuff.
 		CtFieldReference var = fieldAccess.getVariable();
 		
 		if (MathConverter.hasConstant(var.getQualifiedName())) {
 			write(MathConverter.getConstant(var.getQualifiedName()));
-		} else if (var.isFinal()) { 
+		} else if (var.isFinal()) {
 			scan(var.getDeclaration().getDefaultExpression());
 		} else {
 			cancelConversion(fieldAccess);
