@@ -18,7 +18,7 @@ public class MapLambdaProcessor<T>  extends AbstractProcessor<CtMethod<T>>{
 	
 	@Override
 	public void process(CtMethod<T> target) {
-		if (target.getSimpleName().equals("call")) {
+		if (target.getSimpleName().equals("map")) {
 
 			checkAndReplaceMethodBody(target);
 			

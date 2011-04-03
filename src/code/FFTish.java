@@ -1,9 +1,8 @@
 package code;
 
-import aeminium.gpu.GPUDevice;
 import aeminium.gpu.lists.FloatList;
 import aeminium.gpu.lists.PList;
-import aeminium.gpu.operations.Lambda;
+import aeminium.gpu.operations.functions.LambdaMapper;
 
 public class FFTish {
 	private static final int ARRAY_SIZE = 100000;
@@ -15,9 +14,9 @@ public class FFTish {
 			input.add(new Float(i));
 		}
 		
-		PList<Float> output = input.map(new Lambda<Float,Float>() {
-			@Override
-			public Float call(Float o) {
+		PList<Float> output = input.map(new LambdaMapper<Float,Float>() {
+			
+			public Float map(Float o) {
 				double kth = -2 * o * Math.PI / ARRAY_SIZE;
 	            return new Float(Math.cos(kth) + 2*Math.sin(kth));
 			}

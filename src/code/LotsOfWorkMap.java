@@ -1,12 +1,8 @@
 package code;
 
-import aeminium.gpu.GPUDevice;
 import aeminium.gpu.lists.DoubleList;
 import aeminium.gpu.lists.PList;
-import aeminium.gpu.operations.Lambda;
-import aeminium.gpu.utils.SourceReader;
-
-import com.nativelibs4java.opencl.CLKernel;
+import aeminium.gpu.operations.functions.LambdaMapper;
 
 public class LotsOfWorkMap {
 	private final static int ARRAY_SIZE = 1000000;
@@ -18,10 +14,9 @@ public class LotsOfWorkMap {
 			input.add(new Double(i));
 		}
 		
-		PList<Double> output = input.map(new Lambda<Double,Double>() {
+		PList<Double> output = input.map(new LambdaMapper<Double,Double>() {
 		
-			@Override
-			public Double call(Double o) {
+			public Double map(Double o) {
 				double kth = -2 * o * Math.PI / ARRAY_SIZE;
 				double c = Math.cos(kth) + 2*Math.sin(kth);
 	            return Math.acos(c) * Math.log(kth) - Math.pow(ARRAY_SIZE, c);
