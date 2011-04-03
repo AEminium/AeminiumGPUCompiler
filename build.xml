@@ -46,8 +46,15 @@
 
 	<target name="main" depends="compile">
 	</target>
+	
+	<target name="fetchruntime">
+		<exec executable="ant" dir="../AeminiumGPU/">
+			<arg value="jar" />
+		</exec>
+		<copy file="../AeminiumGPU/dist/AeminiumGPU.jar" todir="${lib.dir}" />
+	</target>
 
-	<target name="run" depends="compile">
+	<target name="run" depends="fetchruntime, compile">
 		<java fork="true" classname="${main-class}">
 			<classpath>
 				<path location="${build.dir}" />
