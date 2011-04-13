@@ -14,28 +14,34 @@ public class MapLambdaProcessor<T>  extends AbstractLambdaProcessor<T>{
 
 	
 	@Override
-	public void process(CtMethod<T> target) {
-		if (target.getSimpleName().equals("map")) {
-			checkAndReplaceMethodBody(target);
-			checkConsistency(target);
+	public void process(CtClass<T> target) {
+		if (target.getSuperclass() != null) {
+			if (target.getSuperclass().toString().equals("aeminium.gpu.operations.functions.LambdaMapper")) {
+				for(CtMethod<?> m : target.getMethods()) {
+					if (m.getSimpleName().equals("map")) {
+						checkAndReplaceMethodBody(m);
+					}
+				}
+			}
 		}
+		checkConsistency(target);
 	}
 	
-	private void checkAndReplaceMethodBody(CtMethod<T> target) {
+	private <K> void checkAndReplaceMethodBody(CtMethod<K> target) {
 		parseParameters(target);
-		CtBlock<T> body = target.getBody();
-		checkAndGenerateExpr(body, params);
+		CtBlock<K> body = target.getBody();
+		clCode = checkAndGenerateExpr(body, params);
 		
 		if (canSubstitute) {
 			String clString = clCode.toString();
-			String id = getOpId(target);
+			String id = getOpId("map", target);
 			preCompile(target, clString, id);
 			Template t = new MapLambdaTemplate(clString, id, params);
 			Substitution.insertAllMethods(target.getParent(CtClass.class), t);
 		}
 	}
 	
-	protected void preCompile(CtMethod<T> target, String clString, String id) {
+	protected void preCompile(CtMethod<?> target, String clString, String id) {
 		String inputType = target.getParameters().get(0).getType().getQualifiedName();
 		String outputType = target.getType().getQualifiedName();
 		MapCodeGen g = new MapCodeGen(inputType, outputType, clString, params, id);

@@ -4,12 +4,13 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-import com.martiansoftware.jsap.JSAPException;
 import spoon.Launcher;
 import spoon.support.builder.CtResource;
 import spoon.support.builder.support.CtFolderFile;
-
 import aeminium.gpu.compiler.processing.MapLambdaProcessor;
+import aeminium.gpu.compiler.processing.ReduceLambdaProcessor;
+
+import com.martiansoftware.jsap.JSAPException;
 
 public class AeminiumGPUCompilerLauncher extends Launcher {
 
@@ -21,6 +22,7 @@ public class AeminiumGPUCompilerLauncher extends Launcher {
 	protected List<String> getProcessorTypes() {
 		List<String> l = super.getProcessorTypes();
 		l.add(MapLambdaProcessor.class.getName());
+		l.add(ReduceLambdaProcessor.class.getName());
 		return l;
 	}
 

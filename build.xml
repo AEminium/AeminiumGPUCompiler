@@ -4,7 +4,7 @@
 	<property name="src.dir" value="src" />
 	<property name="build.dir" value="bin" />
 	<property name="lib.dir" value="lib" />
-	<property name="main-class" value="code.SimpleMap" />
+	<property name="main-class" value="code.MapReduceExample" />
 
 
 	<property name="spooned.dir" value="spooned" />
@@ -36,6 +36,7 @@
 			<sourceSet dir="${src.dir}" />
 			<templateset dir="${compiler.src.dir}/aeminium/gpu/compiler/template" />
 			<processor type="aeminium.gpu.compiler.processing.MapLambdaProcessor" />
+			<processor type="aeminium.gpu.compiler.processing.ReduceLambdaProcessor" />
 		</spoon>
 	</target>
 
