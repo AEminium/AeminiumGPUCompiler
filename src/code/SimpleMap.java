@@ -12,8 +12,8 @@ public class SimpleMap {
 		in.add(5.0);
 		PList<Float> out = in.map(new LambdaMapper<Double, Float>() {
 
-			public Float map(Double input) {
-				return (float) Math.sin(input);
+			public Float map(Double input_with_other_name) {
+				return (float) Math.sin(input_with_other_name);
 			}
 			
 		});

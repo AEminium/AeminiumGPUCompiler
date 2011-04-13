@@ -74,14 +74,14 @@ public class OpenCLCodeGeneratorVisitor implements CtVisitor {
 	
 	private boolean isPossible = true;
 	
-	protected String input_var;
+	protected String[] input_vars;
 	protected Environment env;
 	protected CodeGenerationContext context = new CodeGenerationContext();
 	private StringBuffer sbf = new StringBuffer();
 	
-	public OpenCLCodeGeneratorVisitor(Environment e, String var) {
+	public OpenCLCodeGeneratorVisitor(Environment e, String[] vars) {
 		env = e;
-		input_var = var;
+		input_vars = vars;
 	}
 	
 	/* Wanted Methods */
@@ -895,11 +895,13 @@ public class OpenCLCodeGeneratorVisitor implements CtVisitor {
 
 	@Override
 	public <T> void visitCtParameterReference(CtParameterReference<T> reference) {
-		if (reference.getSimpleName().equals(input_var)) {
-			write("input");
-		} else {
-			write(reference.getSimpleName());	
+		for (String input_var : input_vars) {
+			if (reference.getSimpleName().equals(input_var)) {
+				write(reference.getSimpleName());
+				return;
+			}
 		}
+		cancelConversion(reference);
 	}
 
 

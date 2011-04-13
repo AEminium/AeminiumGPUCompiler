@@ -4,7 +4,7 @@
 	<property name="src.dir" value="src" />
 	<property name="build.dir" value="bin" />
 	<property name="lib.dir" value="lib" />
-	<property name="main-class" value="code.FFTish" />
+	<property name="main-class" value="code.SimpleMap" />
 
 
 	<property name="spooned.dir" value="spooned" />
@@ -63,6 +63,23 @@
 			<!-- <jvmarg value="-Xrunhprof:cpu=samples,file=log.txt,depth=3"/> -->
 		</java>
 	</target>
+	
+	<target name="test" depends="compile">
+	    <junit failureProperty="test.failure" fork="true">
+	      <jvmarg value="-Xms512m" />
+		  <jvmarg value="-Xmx1536m" />
+	      <classpath refid="classpath.test" />
+
+	      <formatter type="brief" usefile="false" />
+	    	
+	      <test name="${testcase}" todir="${classes.dir}" if="${testcase}"/>
+	      <batchtest>
+	        <fileset dir="${classes.dir}" includes="aeminium/gpu/tests/*.class aeminium/gpu/tests/*/*.class" excludes="**/*$*.class **/*Template.class" />
+	      </batchtest>
+	    </junit>
+
+	    <fail message="test failed" if="test.failure" />
+	  </target>
 
 
 </project>
