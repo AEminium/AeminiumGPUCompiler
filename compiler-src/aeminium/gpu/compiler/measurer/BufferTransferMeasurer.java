@@ -1,7 +1,5 @@
 package aeminium.gpu.compiler.measurer;
 
-import java.util.ArrayList;
-
 import aeminium.gpu.buffers.BufferHelper;
 import aeminium.gpu.devices.DefaultDeviceFactory;
 import aeminium.gpu.devices.GPUDevice;
@@ -15,6 +13,7 @@ import aeminium.gpu.lists.PList;
 
 import com.nativelibs4java.opencl.CLBuffer;
 import com.nativelibs4java.opencl.CLContext;
+import com.nativelibs4java.opencl.CLMem;
 import com.nativelibs4java.opencl.CLQueue;
 
 public class BufferTransferMeasurer {
@@ -43,6 +42,7 @@ public class BufferTransferMeasurer {
 			startTime = System.nanoTime();
 			inbuffer = BufferHelper.createInputOutputBufferFor(ctx, input);
 			copyToTime = System.nanoTime() - startTime;
+			input.clear();
 		}
 
 		@Override
