@@ -5,6 +5,7 @@
 	<property name="build.dir" value="bin" />
 	<property name="lib.dir" value="lib" />
 	<property name="main-class" value="code.MapReduceExample" />
+	<property name="record-main-class" value="aeminium.gpu.compiler.measurer.MainMeasurer" />
 
 
 	<property name="spooned.dir" value="spooned" />
@@ -82,5 +83,15 @@
 	    <fail message="test failed" if="test.failure" />
 	  </target>
 
+	<target name="record" depends="compile-compiler">
+		<java fork="true" classname="${record-main-class}">
+			<jvmarg value="-Xms512m" />
+		  	<jvmarg value="-Xmx1536m" />
+			<classpath>
+				<path location="${compiler.build.dir}" />
+				<path refid="classpath" />
+			</classpath>
+		</java>
+	</target>
 
 </project>
