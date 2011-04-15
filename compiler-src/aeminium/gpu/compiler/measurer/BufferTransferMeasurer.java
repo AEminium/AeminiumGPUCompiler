@@ -13,7 +13,6 @@ import aeminium.gpu.lists.PList;
 
 import com.nativelibs4java.opencl.CLBuffer;
 import com.nativelibs4java.opencl.CLContext;
-import com.nativelibs4java.opencl.CLMem;
 import com.nativelibs4java.opencl.CLQueue;
 
 public class BufferTransferMeasurer {
@@ -29,8 +28,12 @@ public class BufferTransferMeasurer {
 		private long copyFromTime;
 		private CLBuffer<?> inbuffer;
 		PList<?> input;
+		int inputSize = 0;
+		String inputType;
 		
 		public CopyProgram(PList<?> input) {
+			this.inputSize = input.size();
+			this.inputType = input.getType().getSimpleName();
 			this.input = input;
 		}
 
@@ -43,6 +46,8 @@ public class BufferTransferMeasurer {
 			inbuffer = BufferHelper.createInputOutputBufferFor(ctx, input);
 			copyToTime = System.nanoTime() - startTime;
 			input.clear();
+			input = null;
+			System.gc();
 		}
 
 		@Override
@@ -55,7 +60,7 @@ public class BufferTransferMeasurer {
 		@Override
 		public void retrieveResults(CLContext ctx, CLQueue q) {
 			startTime = System.nanoTime();
-			PList<?> out = BufferHelper.extractFromBuffer(inbuffer, q, null, input.size(), input);
+			PList<?> out = BufferHelper.extractFromBuffer(inbuffer, q, null, inputType, inputSize);
 			copyFromTime = System.nanoTime() - startTime;
 		}
 
@@ -98,6 +103,7 @@ public class BufferTransferMeasurer {
 					dev.execute(p);
 					sumTo += p.getCopyToTime();
 					sumFrom += p.getCopyFromTime();
+					System.gc();
 				}
 				
 				Configuration.set("time.buffer." + in.getType().getSimpleName() + ".to." + size, sumTo/TIMES);
