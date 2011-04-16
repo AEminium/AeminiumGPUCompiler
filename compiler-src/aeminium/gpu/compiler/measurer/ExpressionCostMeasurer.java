@@ -6,23 +6,13 @@ import aeminium.gpu.operations.functions.LambdaMapper;
 
 public class ExpressionCostMeasurer {
 	
-	static int tSize = 18;
-	
-	static int[] sizesToTest = new int[tSize];
-	
-	static {
-		int v = 8;
-		for(int i=0; i<tSize; i++ ) {
-			v *= 2;
-			sizesToTest[i] = v;
-		}
-	}
+	int[] sizes = new int[] {10, 100, 1000, 10000, 100000, 1000000, 10000000};
 	
 	public void measureExprForDifferentSizes(String expr) {
 		long v;
 		System.out.println("--------");
 		System.out.println("E: " + expr);
-		for (int i : sizesToTest) {
+		for (int i : sizes) {
 			v = measureExpr(expr, i);
 			System.out.println("i:" + i + " -> " + v);
 		}
@@ -53,7 +43,8 @@ public class ExpressionCostMeasurer {
 		
 		long startTime = System.nanoTime();
 		output.get(0); // Force evaluation
-		return System.nanoTime() - startTime;
+		long totalTime = System.nanoTime() - startTime;
+		return totalTime - Configuration.get("time.buffer.Float.from." + n);
 	}
 	
 	public void measureExprs() {
