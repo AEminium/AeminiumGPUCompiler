@@ -6,6 +6,9 @@ public class MainMeasurer {
 		BufferTransferMeasurer btm = new BufferTransferMeasurer();
 		btm.logMeasures();
 		
+		KernelCompilerMeasurer ktm = new KernelCompilerMeasurer();
+		ktm.logMeasures();
+		
 		ExpressionCostMeasurer ecm = new ExpressionCostMeasurer();
 		ecm.measureExprs();
 	}
