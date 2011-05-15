@@ -22,7 +22,7 @@ public class MapReduceExample {
 			}
 			
 		});
-		
+		input.get(0);
 		int sum = input.reduce(new LambdaReducer<Integer>(){
 
 			@Override

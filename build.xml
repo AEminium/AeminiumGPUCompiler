@@ -16,6 +16,10 @@
 		<path refid="compiler.classpath" />
 		<fileset dir="${lib.dir}" includes="**/*.jar" />
 	</path>
+	
+	<path id="classpath.test">
+			<path refid="classpath" />
+		</path>
 
 	<path id="compiler.classpath">
 		<pathelement location="${compiler.build.dir}" />
@@ -73,9 +77,9 @@
 
 	      <formatter type="brief" usefile="false" />
 	    	
-	      <test name="${testcase}" todir="${classes.dir}" if="${testcase}"/>
+	      <test name="${testcase}" todir="${compiler.build.dir}" if="${testcase}"/>
 	      <batchtest>
-	        <fileset dir="${classes.dir}" includes="aeminium/gpu/tests/*.class aeminium/gpu/tests/*/*.class" excludes="**/*$*.class **/*Template.class" />
+	        <fileset dir="${compiler.build.dir}" includes="aeminium/gpu/tests/*.class aeminium/gpu/tests/*/*.class" excludes="**/*$*.class **/*Template.class" />
 	      </batchtest>
 	    </junit>
 

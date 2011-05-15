@@ -1,4 +1,4 @@
-package aeminium.gpu.compiler.processing.visitor;
+package aeminium.gpu.compiler.processing.opencl;
 
 import java.lang.annotation.Annotation;
 import java.util.List;
@@ -64,10 +64,6 @@ import spoon.reflect.reference.CtReference;
 import spoon.reflect.reference.CtTypeParameterReference;
 import spoon.reflect.reference.CtTypeReference;
 import spoon.reflect.visitor.CtVisitor;
-import aeminium.gpu.compiler.processing.opencl.BoxedTypes;
-import aeminium.gpu.compiler.processing.opencl.CLType;
-import aeminium.gpu.compiler.processing.opencl.MathConverter;
-import aeminium.gpu.compiler.processing.opencl.MathFunction;
 import aeminium.gpu.compiler.processing.utils.CodeGenerationContext;
 
 public class OpenCLCodeGeneratorVisitor implements CtVisitor {

@@ -1,7 +1,6 @@
-package aeminium.gpu.compiler.processing.visitor;
+package aeminium.gpu.compiler.processing.opencl;
 
 import spoon.reflect.reference.CtTypeReference;
-import aeminium.gpu.compiler.processing.opencl.CLType;
 
 public class CastHelper {
 	

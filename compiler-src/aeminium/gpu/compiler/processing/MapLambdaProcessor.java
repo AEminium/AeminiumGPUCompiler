@@ -5,6 +5,7 @@ import spoon.reflect.declaration.CtClass;
 import spoon.reflect.declaration.CtMethod;
 import spoon.template.Substitution;
 import spoon.template.Template;
+import aeminium.gpu.compiler.processing.estimation.ExpressionEstimatorVisitor;
 import aeminium.gpu.compiler.template.MapLambdaTemplate;
 import aeminium.gpu.devices.DefaultDeviceFactory;
 import aeminium.gpu.devices.GPUDevice;
@@ -35,8 +36,16 @@ public class MapLambdaProcessor<T>  extends AbstractLambdaProcessor<T>{
 		if (canSubstitute) {
 			String clString = clCode.toString();
 			String id = getOpId("map", target);
+			
+			/* Pre-compilation to speed up execution */
 			preCompile(target, clString, id);
-			Template t = new MapLambdaTemplate(clString, id, params);
+			
+			/* Cost estimation */
+			ExpressionEstimatorVisitor estimator = new ExpressionEstimatorVisitor();
+			body.accept(estimator);
+			
+			/* Introduction of extra methods */
+			Template t = new MapLambdaTemplate(clString, id, params, estimator.getExpressionString());
 			Substitution.insertAllMethods(target.getParent(CtClass.class), t);
 		}
 	}

@@ -5,7 +5,7 @@ import spoon.reflect.declaration.CtClass;
 import spoon.reflect.declaration.CtElement;
 import spoon.reflect.declaration.CtMethod;
 import spoon.reflect.visitor.ModelConsistencyChecker;
-import aeminium.gpu.compiler.processing.visitor.OpenCLCodeGeneratorVisitor;
+import aeminium.gpu.compiler.processing.opencl.OpenCLCodeGeneratorVisitor;
 
 public abstract class AbstractLambdaProcessor<T>  extends AbstractProcessor<CtClass<T>>{
 
