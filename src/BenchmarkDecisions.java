@@ -35,7 +35,7 @@ public class BenchmarkDecisions {
 		});
 		System.out.println("First el of sum: " + output.get(0));
 		
-		
+		sleep();
 		
 		/* SIN */
 		System.out.println("GPU op: sin " + input.size());
@@ -49,6 +49,7 @@ public class BenchmarkDecisions {
 		});
 		System.out.println("First el of sin: " + output.get(0));
 		
+		sleep();
 		
 		/* SIN and COS */
 		System.out.println("GPU op: sin+cos " + input.size());
@@ -62,6 +63,7 @@ public class BenchmarkDecisions {
 		});
 		System.out.println("First el of sin+cos: " + output.get(0));
 		
+		sleep();
 		
 		/* Factorial */
 		System.out.println("GPU op: factorial " + input.size());
@@ -78,5 +80,15 @@ public class BenchmarkDecisions {
 			
 		});
 		System.out.println("First el of factorial: " + output.get(0));
+		
+		sleep();
+	}
+
+	private static void sleep() {
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 }
