@@ -6,9 +6,8 @@ public class BenchmarkDecisions {
 	public static void main(String[] args) {
 	    int size = 10;
 	    int inc = 10;
-	    while (size < 10000000) {
-	        System.out.println("Testing GPU vs GPU for N="+size);
-	        runForN(size);
+	    while (size < 100000) {
+	        runForNTimes(size);
 	        size += inc;
 	        if (size >= 10*inc) {
 	            inc *= 10;
@@ -16,6 +15,13 @@ public class BenchmarkDecisions {
 	    }
 	}
 
+	private static void runForNTimes(int N) {
+		System.out.println("Testing GPU vs GPU for N="+N);
+		for (int i = 0;i<3; i++) {
+			runForN(N);
+		}
+	}
+	
 	private static void runForN(int N) {
 		PList<Float> output;
 		PList<Float> input = new FloatList();
