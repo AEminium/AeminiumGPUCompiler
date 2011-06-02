@@ -4,7 +4,7 @@
 	<property name="src.dir" value="src" />
 	<property name="build.dir" value="bin" />
 	<property name="lib.dir" value="lib" />
-	<property name="main-class" value="code.MapReduceExample" />
+	<property name="main-class" value="BenchmarkDecisions" />
 
 
 	<property name="spooned.dir" value="spooned" />

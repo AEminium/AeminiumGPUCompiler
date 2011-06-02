@@ -16,6 +16,9 @@ public class EstimationStore implements Estimation, Iterable<Pair<Integer, Strin
 
 	@Override
 	public void addEstimation(String expr, int times) {
+		if (expr.equals("le") || expr.equals("postinc")) {
+			expr = "plus";
+		}
 		if (store.containsKey(expr)) {
 			times+=store.get(expr);
 		}
