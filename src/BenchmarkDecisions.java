@@ -6,7 +6,7 @@ public class BenchmarkDecisions {
 	public static void main(String[] args) {
 	    int size = 10;
 	    int inc = 10;
-	    while (size < 100000) {
+	    while (size < 10000000) {
 	        runForNTimes(size);
 	        size += inc;
 	        if (size >= 10*inc) {
