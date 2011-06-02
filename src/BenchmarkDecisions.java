@@ -17,7 +17,7 @@ public class BenchmarkDecisions {
 
 	private static void runForNTimes(int N) {
 		System.out.println("Testing GPU vs GPU for N="+N);
-		for (int i = 0;i<3; i++) {
+		for (int i = 0;i<10; i++) {
 			runForN(N);
 		}
 	}
