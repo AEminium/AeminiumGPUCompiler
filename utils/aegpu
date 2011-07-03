@@ -1,0 +1,3 @@
+#!/bin/sh
+
+java -cp bin:lib/javacl-1.0-beta-6-shaded.jar:lib/AeminiumGPU.jar $1
