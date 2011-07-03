@@ -10,6 +10,8 @@ import aeminium.gpu.operations.functions.LambdaReducer;
 
 public class SumOfDivisible {
 
+	public static int FIRST_NATURAL_NUMBERS = 5000000;
+	
 	public static void main(String[] args) {
 		
 		long tmp = System.nanoTime();
@@ -28,19 +30,15 @@ public class SumOfDivisible {
 	
 	private static long cpuIterative() {
 		long sum = 0;
-		for(int i=0; i<1000000;i++) {
+		for(int i=0; i<FIRST_NATURAL_NUMBERS;i++) {
 			if (i % 7 == 0) sum += i;
 		}
 		return sum;
 	}
 
 	private static Long gpuMapReduce() {
-		/*PList<Integer> integers = new IntList();
-		for(int i=0; i<1000000;i++) {
-			integers.add(i);
-		}*/
 		
-		PList<Integer> integers = new Range(1000000);
+		PList<Integer> integers = new Range(FIRST_NATURAL_NUMBERS);
 		
 		Long o = integers.map(new LambdaMapper<Integer, Long>() {
 
