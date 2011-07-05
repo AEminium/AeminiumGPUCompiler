@@ -47,7 +47,7 @@ public class ReduceLambdaProcessor<T>  extends AbstractLambdaProcessor<T>{
 	private void insertNewMethods(CtClass<T> target) {
 		if (canSubstitute) {
 			String id = getOpId("reduce", target);
-			preCompile(target, clCode, seedCode, id);
+			//preCompile(target, clCode, seedCode, id);
 			Template t = new ReduceLambdaTemplate(clCode, seedCode, id, params);
 			Substitution.insertAllMethods(target, t);
 		}

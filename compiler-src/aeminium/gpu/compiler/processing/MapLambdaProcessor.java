@@ -38,7 +38,7 @@ public class MapLambdaProcessor<T>  extends AbstractLambdaProcessor<T>{
 			String id = getOpId("map", target);
 			
 			/* Pre-compilation to speed up execution */
-			preCompile(target, clString, id);
+			//preCompile(target, clString, id);
 			
 			/* Cost estimation */
 			ExpressionEstimatorVisitor estimator = new ExpressionEstimatorVisitor();
