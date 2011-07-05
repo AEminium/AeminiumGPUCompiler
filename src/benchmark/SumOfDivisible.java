@@ -10,7 +10,7 @@ import aeminium.gpu.operations.functions.LambdaReducer;
 
 public class SumOfDivisible {
 
-	public static int FIRST_NATURAL_NUMBERS = 5000000;
+	public static int FIRST_NATURAL_NUMBERS = 500;
 	
 	public static void main(String[] args) {
 		
