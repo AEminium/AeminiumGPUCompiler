@@ -36,8 +36,23 @@ public class MapReduceExample {
 			}
 			
 		});
-		
 		System.out.println("The sum of the first " + N + " numbers is " + sum);
+		
+		sum = input.reduce(new LambdaReducer<Integer>(){
+
+			@Override
+			public Integer combine(Integer input, Integer other) {
+				return Math.min(input,other);
+			}
+			
+			@Override
+			public Integer getSeed() {
+				return 10000000;
+			}
+			
+		});
+		
+		System.out.println("The min of the first " + N + " numbers is " + sum);
 		
 		
 	}

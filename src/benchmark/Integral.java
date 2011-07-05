@@ -1,6 +1,5 @@
 package benchmark;
 
-import aeminium.gpu.lists.PList;
 import aeminium.gpu.lists.lazyness.Range;
 import aeminium.gpu.operations.functions.LambdaMapper;
 import aeminium.gpu.operations.functions.LambdaReducer;
@@ -23,49 +22,41 @@ public static int RESOLUTION = 500;
 	}
 
 	
-	private static double f(double x) {
-		return Math.pow(Math.E, Math.sin(x)); 
-	}
-	
-	private static double cpuIterative() {
+	private static double cpuIterative(){
 		double sum = 0;
-		for(int i=0; i<RESOLUTION;i++) {
-			double min = i /RESOLUTION;
-			double max = i+1 /RESOLUTION;
-			double area = (f(min) + f(max)) /(RESOLUTION*2);
-			sum += area;
+		for(int i=0;i<500000;i+=1) {
+			double b = Math.pow(Math.E, Math.sin(i / 500000));
+			double B = Math.pow(Math.E, Math.sin((i+1) / 500000));				
+			sum += ((b+B) / 2 ) * (1/500000);
 		}
 		return sum;
+		
+		
 	}
 
-	private static Double gpuMapReduce() {
-		
-		PList<Integer> integers = new Range(RESOLUTION);
-		
-		Double o = integers.map(new LambdaMapper<Integer, Double>() {
+	private static double gpuMapReduce() {	
+		return new Range(500000).map(new LambdaMapper<Integer, Double>() {
 
 			@Override
-			public Double map(Integer i) {
-				double min = i /RESOLUTION;
-				double max = i+1/RESOLUTION;
-				double area = (f(min) + f(max)) /(RESOLUTION*2);
-				return area;
+			public Double map(Integer input) {
+				double b = Math.pow(Math.E, Math.sin(input / 500000));
+				double B = Math.pow(Math.E, Math.sin((input+1) / 500000));				
+				return ((b+B) / 2 ) * (1/500000);
 			}
 			
-		}).evaluate().reduce(new LambdaReducer<Double>() {
+		}).reduce(new LambdaReducer<Double>(){
 
 			@Override
-			public Double combine(Double a, Double b) {
-				return a+b;
+			public Double combine(Double input, Double other) {
+				return input + other;
 			}
-
+			
 			@Override
 			public Double getSeed() {
 				return 0.0;
 			}
 			
 		});
-		return o;
 	}
 		
 }

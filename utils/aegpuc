@@ -12,5 +12,5 @@ EXTRA_LIB=""
 
 java -cp "$COMPILE_LIB:$CLASS_LIB:$COMPILER_SRC:$EXTRA_LIB" \
 	aeminium.gpu.compiler.launcher.AeminiumGPUCompilerLauncher \
-	-i $1
+	 --compliance 6 -i $1
 javac -cp "$CLASS_LIB:$EXTRA_LIB" spooned/**/*.java -d bin

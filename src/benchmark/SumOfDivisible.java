@@ -1,6 +1,5 @@
 package benchmark;
 
-import aeminium.gpu.lists.PList;
 import aeminium.gpu.lists.lazyness.Range;
 import aeminium.gpu.operations.functions.LambdaMapper;
 import aeminium.gpu.operations.functions.LambdaReducer;
@@ -30,37 +29,41 @@ public class SumOfDivisible {
 	
 	private static long cpuIterative() {
 		long sum = 0;
-		for(int i=0; i<FIRST_NATURAL_NUMBERS;i++) {
-			if (i % 7 == 0) sum += i;
+		for(int i=1;i<=1000;i+=1) {
+			if (i % 7 == 0) {
+				sum += i;
+			}
 		}
 		return sum;
 	}
 
-	private static Long gpuMapReduce() {
-		
-		PList<Integer> integers = new Range(FIRST_NATURAL_NUMBERS);
-		
-		Long o = integers.map(new LambdaMapper<Integer, Long>() {
+	private static long gpuMapReduce() {
+		return new Range(1000).map(new LambdaMapper<Integer, Integer>() {
 
 			@Override
-			public Long map(Integer i) {
-				return (long) ((i % 7 == 0) ? i : 0);
+			public Integer map(Integer input) {
+				if (input+1 % 7 == 0) {
+					return input+1;
+				}
+				else {
+					return 0;
+				}
 			}
 			
-		}).reduce(new LambdaReducer<Long>() {
+		}).reduce(new LambdaReducer<Integer>(){
 
 			@Override
-			public Long combine(Long a, Long b) {
-				return a+b;
+			public Integer combine(Integer input, Integer other) {
+				return input + other;
 			}
-
+			
 			@Override
-			public Long getSeed() {
-				return 0L;
+			public Integer getSeed() {
+				return 0;
 			}
 			
 		});
-		return o;
+		
 	}
 	
 }
