@@ -1,11 +1,12 @@
 package benchmark;
 
+import aeminium.gpu.lists.PList;
 import aeminium.gpu.lists.lazyness.Range;
 import aeminium.gpu.operations.functions.LambdaMapper;
 import aeminium.gpu.operations.functions.LambdaReducer;
 
 public class Integral {
-public static int RESOLUTION = 500;
+public static double RESOLUTION = 10000000.0;
 	
 	public static void main(String[] args) {
 		
@@ -24,27 +25,34 @@ public static int RESOLUTION = 500;
 	
 	private static double cpuIterative(){
 		double sum = 0;
-		for(int i=0;i<500000;i+=1) {
-			double b = Math.pow(Math.E, Math.sin(i / 500000));
-			double B = Math.pow(Math.E, Math.sin((i+1) / 500000));				
-			sum += ((b+B) / 2 ) * (1/500000);
+		for(int i=0;i<RESOLUTION;i+=1) {
+			double b = Math.pow(Math.E, Math.sin(i / RESOLUTION));
+			double B = Math.pow(Math.E, Math.sin((i+1) / RESOLUTION));
+			sum += ((b+B) / 2 ) * (1/RESOLUTION);
 		}
 		return sum;
 		
 		
 	}
 
-	private static double gpuMapReduce() {	
-		return new Range(500000).map(new LambdaMapper<Integer, Double>() {
+	private static double gpuMapReduce() {
+		PList<Integer> li = new Range((int)RESOLUTION);
+		
+		PList<Double> li2 = li.map(new LambdaMapper<Integer, Double>() {
 
 			@Override
 			public Double map(Integer input) {
-				double b = Math.pow(Math.E, Math.sin(input / 500000));
-				double B = Math.pow(Math.E, Math.sin((input+1) / 500000));				
-				return ((b+B) / 2 ) * (1/500000);
+				double n = 10000000.0;
+				double b = Math.pow(Math.E, Math.sin(input / n));
+				double B = Math.pow(Math.E, Math.sin((input+1) / n));
+				return ((b+B) / 2 ) * (1/n);
 			}
 			
-		}).reduce(new LambdaReducer<Double>(){
+		});
+		
+		li2.get(0);
+		
+		return li2.reduce(new LambdaReducer<Double>(){
 
 			@Override
 			public Double combine(Double input, Double other) {
