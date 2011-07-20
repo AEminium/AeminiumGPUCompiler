@@ -9,7 +9,7 @@ import aeminium.gpu.operations.functions.LambdaReducer;
 
 public class SumOfDivisible {
 
-	public static int FIRST_NATURAL_NUMBERS = 500;
+	public static int FIRST_NATURAL_NUMBERS = 5000000;
 	
 	public static void main(String[] args) {
 		
@@ -29,7 +29,7 @@ public class SumOfDivisible {
 	
 	private static long cpuIterative() {
 		long sum = 0;
-		for(int i=1;i<=1000;i+=1) {
+		for(int i=1;i<=FIRST_NATURAL_NUMBERS;i+=1) {
 			if (i % 7 == 0) {
 				sum += i;
 			}
@@ -38,28 +38,23 @@ public class SumOfDivisible {
 	}
 
 	private static long gpuMapReduce() {
-		return new Range(1000).map(new LambdaMapper<Integer, Integer>() {
+		return new Range(FIRST_NATURAL_NUMBERS).map(new LambdaMapper<Integer, Long>() {
 
 			@Override
-			public Integer map(Integer input) {
-				if (input+1 % 7 == 0) {
-					return input+1;
-				}
-				else {
-					return 0;
-				}
+			public Long map(Integer input) {
+				return (input+1) % 7 == 0 ? (long)input+1 : 0L;
 			}
 			
-		}).reduce(new LambdaReducer<Integer>(){
+		}).reduce(new LambdaReducer<Long>(){
 
 			@Override
-			public Integer combine(Integer input, Integer other) {
+			public Long combine(Long input, Long other) {
 				return input + other;
 			}
 			
 			@Override
-			public Integer getSeed() {
-				return 0;
+			public Long getSeed() {
+				return 0L;
 			}
 			
 		});
