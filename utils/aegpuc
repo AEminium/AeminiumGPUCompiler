@@ -6,7 +6,7 @@
 
 
 COMPILE_LIB="compiler-lib/spoon-core-1.4-jar-with-dependencies.jar"
-CLASS_LIB="lib/AeminiumGPU.jar:lib/javacl-1.0-beta-6-shaded.jar:lib/javacl-demos-1.0-beta-6-shaded.jar"
+CLASS_LIB="lib/AeminiumGPU.jar:lib/javacl-1.0.0-RC1-shaded.jar"
 COMPILER_SRC="compiler/"
 EXTRA_LIB=""
 

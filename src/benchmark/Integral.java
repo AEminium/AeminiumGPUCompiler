@@ -50,8 +50,6 @@ public static double RESOLUTION = 10000000.0;
 			
 		});
 		
-		li2.get(0);
-		
 		return li2.reduce(new LambdaReducer<Double>(){
 
 			@Override
