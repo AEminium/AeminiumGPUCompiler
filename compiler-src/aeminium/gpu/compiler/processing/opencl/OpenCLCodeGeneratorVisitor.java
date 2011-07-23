@@ -610,7 +610,15 @@ public class OpenCLCodeGeneratorVisitor implements CtVisitor {
 		if (MathConverter.hasConstant(var.getQualifiedName())) {
 			write(MathConverter.getConstant(var.getQualifiedName()));
 		} else if (var.isFinal()) {
-			scan(var.getDeclaration().getDefaultExpression());
+			if (var.getDeclaration() != null) {
+				scan(var.getDeclaration().getDefaultExpression());
+			} else if (BoxedTypes.typeVariables.containsKey(var.getQualifiedName())) {
+				write(BoxedTypes.typeVariables.get(var.getQualifiedName()));
+			} else {
+				cancelConversion(fieldAccess);
+			}
+			
+			
 		} else {
 			cancelConversion(fieldAccess);
 		}
