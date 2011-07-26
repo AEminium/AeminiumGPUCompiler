@@ -1,7 +1,7 @@
 package code;
 
-import aeminium.gpu.lists.DoubleList;
-import aeminium.gpu.lists.PList;
+import aeminium.gpu.collections.lists.DoubleList;
+import aeminium.gpu.collections.lists.PList;
 import aeminium.gpu.operations.functions.LambdaMapper;
 
 public class SimpleMap {

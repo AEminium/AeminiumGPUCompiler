@@ -52,6 +52,7 @@ public abstract class AbstractLambdaProcessor<T>  extends AbstractProcessor<CtCl
 			}
 			return gen.toString();
 		} else {
+			canSubstitute = false;
 			return null;
 		}
 	}

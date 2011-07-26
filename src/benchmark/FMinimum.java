@@ -1,7 +1,7 @@
 package benchmark;
 
-import aeminium.gpu.lists.PList;
-import aeminium.gpu.lists.lazyness.Range;
+import aeminium.gpu.collections.lazyness.Range;
+import aeminium.gpu.collections.lists.PList;
 import aeminium.gpu.operations.functions.LambdaMapper;
 import aeminium.gpu.operations.functions.LambdaReducer;
 

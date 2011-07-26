@@ -1,7 +1,7 @@
 package code;
 
-import aeminium.gpu.lists.IntList;
-import aeminium.gpu.lists.PList;
+import aeminium.gpu.collections.lists.IntList;
+import aeminium.gpu.collections.lists.PList;
 import aeminium.gpu.operations.functions.LambdaMapper;
 import aeminium.gpu.operations.functions.LambdaReducer;
 

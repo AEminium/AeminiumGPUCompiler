@@ -33,12 +33,17 @@ public class MapLambdaProcessor<T>  extends AbstractLambdaProcessor<T>{
 		CtBlock<K> body = target.getBody();
 		clCode = checkAndGenerateExpr(body, params);
 		
-		if (canSubstitute) {
+		if (clCode == null && canSubstitute) {
+			System.out.println("clCode empty: " +  body);
+		}
+		
+		if (canSubstitute && clCode != null) {
+			
 			String clString = clCode.toString();
 			String id = getOpId("map", target);
 			
 			/* Pre-compilation to speed up execution */
-			//preCompile(target, clString, id);
+			preCompile(target, clString, id);
 			
 			/* Cost estimation */
 			ExpressionEstimatorVisitor estimator = new ExpressionEstimatorVisitor();
@@ -46,7 +51,7 @@ public class MapLambdaProcessor<T>  extends AbstractLambdaProcessor<T>{
 			
 			/* Introduction of extra methods */
 			Template t = new MapLambdaTemplate(clString, id, params, estimator.getExpressionString());
-			Substitution.insertAllMethods(target.getParent(CtClass.class), t);
+			Substitution.insertAllMethods(target.getParent(CtClass.class), t);			
 		}
 	}
 	

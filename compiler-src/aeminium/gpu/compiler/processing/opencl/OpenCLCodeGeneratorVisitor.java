@@ -177,7 +177,7 @@ public class OpenCLCodeGeneratorVisitor implements CtVisitor {
 	
 	private void cancelConversion(Object o) {
 		isPossible = false;
-		if (env.isVerbose()) {
+		if (env.isVerbose() || System.getenv("DEBUG") != null) {
 			System.out.println("CL conversion impossible because of: " + o + "," + o.getClass());
 		}
 	}
@@ -404,7 +404,6 @@ public class OpenCLCodeGeneratorVisitor implements CtVisitor {
 	@Override
 	public void visitCtCodeSnippetStatement(CtCodeSnippetStatement statement) {
 		// Ignore for compiler
-		
 	}
 
 
@@ -418,7 +417,6 @@ public class OpenCLCodeGeneratorVisitor implements CtVisitor {
 	@Override
 	public void visitCtAnonymousExecutable(CtAnonymousExecutable anonymousExec) {
 		// Ignore for Compiler
-		
 	}
 
 
@@ -487,7 +485,6 @@ public class OpenCLCodeGeneratorVisitor implements CtVisitor {
 			}
 		}
 		decTab().writeln().write("}");
-		
 	}
 
 	@Override
@@ -617,8 +614,6 @@ public class OpenCLCodeGeneratorVisitor implements CtVisitor {
 			} else {
 				cancelConversion(fieldAccess);
 			}
-			
-			
 		} else {
 			cancelConversion(fieldAccess);
 		}
@@ -705,6 +700,8 @@ public class OpenCLCodeGeneratorVisitor implements CtVisitor {
 				writeStatement(ifElement.getElseStatement());
 				decTab().writeln();
 			}
+		} else {
+			cancelConversion(ifElement);
 		}
 	}
 
@@ -980,6 +977,8 @@ public class OpenCLCodeGeneratorVisitor implements CtVisitor {
 			} else {
 				write(reference.getDeclaringType().getQualifiedName());
 			}
+		} else {
+			cancelConversion(reference);
 		}
 	}
 

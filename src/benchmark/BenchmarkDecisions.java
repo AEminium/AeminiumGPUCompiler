@@ -1,8 +1,13 @@
-import aeminium.gpu.lists.FloatList;
-import aeminium.gpu.lists.PList;
+package benchmark;
+import aeminium.gpu.collections.lazyness.Range;
+import aeminium.gpu.collections.lists.FloatList;
+import aeminium.gpu.collections.lists.PList;
 import aeminium.gpu.operations.functions.LambdaMapper;
+import aeminium.gpu.operations.functions.LambdaReducer;
 
 public class BenchmarkDecisions {
+	public final static double RESOLUTION = 10000000.0;
+	
 	public static void main(String[] args) {
 	    int size = 10;
 	    int inc = 10;
@@ -86,6 +91,66 @@ public class BenchmarkDecisions {
 			
 		});
 		System.out.println("First el of factorial: " + output.get(0));
+		
+		sleep();
+		
+		/* Integral */
+		System.out.println("GPU op: factorial " + input.size());
+		PList<Integer> li = new Range((int)RESOLUTION);
+		
+		PList<Double> li2 = li.map(new LambdaMapper<Integer, Double>() {
+
+			@Override
+			public Double map(Integer input) {
+				double n = 10000000.0;
+				double b = Math.pow(Math.E, Math.sin(input / n));
+				double B = Math.pow(Math.E, Math.sin((input+1) / n));
+				return ((b+B) / 2 ) * (1/n);
+			}
+			
+		});
+		
+		double output2 = li2.reduce(new LambdaReducer<Double>(){
+
+			@Override
+			public Double combine(Double input, Double other) {
+				return input + other;
+			}
+			
+			@Override
+			public Double getSeed() {
+				return 0.0;
+			}
+			
+		});
+		System.out.println("Integral: " + output2);
+		
+		sleep();
+		
+		/* Integral */
+		System.out.println("GPU op: fminimum " + input.size());
+		output2 = new Range((int)RESOLUTION).map(new LambdaMapper<Integer, Double>() {
+
+			@Override
+			public Double map(Integer input) {
+				double x = 2*input/(double)(RESOLUTION) - 1;
+				return 10 * Math.pow(x, 6) + Math.pow(x, 5)  + 2 * Math.pow(x, 4) + 3 * x * x * x + 2/5*x*x +Math.PI * x;
+			}
+			
+		}).reduce(new LambdaReducer<Double>(){
+
+			@Override
+			public Double combine(Double input, Double other) {
+				return Math.min(input,other);
+			}
+			
+			@Override
+			public Double getSeed() {
+				return Double.MAX_VALUE;
+			}
+			
+		});
+		System.out.println("FMinimum: " + output2);
 		
 		sleep();
 	}
