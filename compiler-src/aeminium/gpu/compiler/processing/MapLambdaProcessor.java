@@ -61,8 +61,10 @@ public class MapLambdaProcessor<T>  extends AbstractLambdaProcessor<T>{
 		MapCodeGen g = new MapCodeGen(inputType, outputType, clString, params, id);
 		
 		GPUDevice gpu = (new DefaultDeviceFactory()).getDevice();
-		// This relies in JavaCL's builtin binary caching.
-		gpu.compile(g.getMapKernelSource());
+		if (gpu != null) {
+			// This relies in JavaCL's builtin binary caching.
+			gpu.compile(g.getMapKernelSource());
+		}
 		
 	}
 

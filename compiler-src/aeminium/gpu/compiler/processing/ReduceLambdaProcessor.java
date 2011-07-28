@@ -45,6 +45,7 @@ public class ReduceLambdaProcessor<T>  extends AbstractLambdaProcessor<T>{
 	}
 	
 	private void insertNewMethods(CtClass<T> target) {
+		
 		if (canSubstitute && clCode != null && seedCode != null) {
 			String id = getOpId("reduce", target);
 			preCompile(target, clCode, seedCode, id);
@@ -59,9 +60,10 @@ public class ReduceLambdaProcessor<T>  extends AbstractLambdaProcessor<T>{
 		ReduceCodeGen g = new ReduceCodeGen(inputType, outputType, clString, seedString, params, id);
 		
 		GPUDevice gpu = (new DefaultDeviceFactory()).getDevice();
-		// This relies in JavaCL's builtin binary caching.
-		gpu.compile(g.getReduceKernelSource());
-		
+		if (gpu != null) {
+			// This relies in JavaCL's builtin binary caching.
+			gpu.compile(g.getReduceKernelSource());
+		}
 	}
 
 }
