@@ -1,6 +1,7 @@
 package aeminium.gpu.compiler.processing.opencl;
 
 import java.lang.annotation.Annotation;
+import java.util.ArrayList;
 import java.util.List;
 
 import spoon.processing.Environment;
@@ -70,14 +71,17 @@ public class OpenCLCodeGeneratorVisitor implements CtVisitor {
 	
 	private boolean isPossible = true;
 	
+	protected CtElement root;
 	protected String[] input_vars;
+	protected ArrayList<String> arguments = new ArrayList<String>();
 	protected Environment env;
 	protected CodeGenerationContext context = new CodeGenerationContext();
 	private StringBuffer sbf = new StringBuffer();
 	
-	public OpenCLCodeGeneratorVisitor(Environment e, String[] vars) {
+	public OpenCLCodeGeneratorVisitor(Environment e, String[] vars, CtElement r) {
 		env = e;
 		input_vars = vars;
+		root = r;
 	}
 	
 	/* Wanted Methods */
@@ -996,12 +1000,27 @@ public class OpenCLCodeGeneratorVisitor implements CtVisitor {
 	}
 
 
+	public <T> boolean inScope(CtVariableAccess<T> variableAccess) {
+		String var = variableAccess.getVariable().getSimpleName();
+		for (String v : input_vars) {
+			if (v.equals(var)) {
+				return true;
+			}
+		}
+		CtElement d =  variableAccess.getVariable().getDeclaration();
+		if (d.hasParent(root)) return true;
+		return false;
+	}
+	
 	@Override
 	public <T> void visitCtVariableAccess(CtVariableAccess<T> variableAccess) {
-		enterCtExpression(variableAccess);
-		scan(variableAccess.getVariable());
-		exitCtExpression(variableAccess);
-		
+		if (inScope(variableAccess)) {
+			enterCtExpression(variableAccess);
+			scan(variableAccess.getVariable());
+			exitCtExpression(variableAccess);
+		} else {
+			cancelConversion(variableAccess);
+		}
 	}
 
 

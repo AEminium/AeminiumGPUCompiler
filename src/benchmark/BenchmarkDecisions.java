@@ -131,9 +131,11 @@ public class BenchmarkDecisions {
 		
 		/* Integral */
 		System.out.println("> GPU op: fminimum " + input.size());
+		
 		final double RESOLUTION = (double) input.size();
-		output2 = new Range((int)RESOLUTION).map(new LambdaMapper<Integer, Double>() {
-
+		
+		output2 = new Range(input.size()).map(new LambdaMapper<Integer, Double>() {
+			
 			@Override
 			public Double map(Integer input) {
 				double x = 2*input/(double)(RESOLUTION) - 1;

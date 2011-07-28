@@ -40,7 +40,7 @@ public abstract class AbstractLambdaProcessor<T>  extends AbstractProcessor<CtCl
 	
 	protected String checkAndGenerateExpr(CtElement expr, String[] input_vars) {
 		
-		OpenCLCodeGeneratorVisitor gen = new OpenCLCodeGeneratorVisitor(getEnvironment(), input_vars);
+		OpenCLCodeGeneratorVisitor gen = new OpenCLCodeGeneratorVisitor(getEnvironment(), input_vars, expr);
 		expr.accept(gen);
 		
 		if (gen.canBeGenerated()) {
