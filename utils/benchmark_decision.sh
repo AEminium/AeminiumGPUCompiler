@@ -7,12 +7,7 @@ ant fetchruntime
 ant compile-compiler
 ./utils/aegpuc src
 
-export FORCE_GPU=1
-echo "GPU NOW"
-./utils/aegpu benchmark.BenchmarkDecisions
-
-unset FORCE_GPU
-export FORCE_CPU=1
-echo "CPU NOW"
-./utils/aegpu benchmark.BenchmarkDecisions
-
+export DEBUG=1
+export BENCH=1
+mkdir -p logs
+./utils/aegpu benchmark.BenchmarkDecisions > logs/benchmark.log
