@@ -132,7 +132,7 @@ public class BenchmarkDecisions {
 		/* Integral */
 		System.out.println("> GPU op: fminimum " + input.size());
 		
-		final double RESOLUTION = (double) input.size();
+		final double RESOLUTION = 100000;
 		
 		output2 = new Range(input.size()).map(new LambdaMapper<Integer, Double>() {
 			
