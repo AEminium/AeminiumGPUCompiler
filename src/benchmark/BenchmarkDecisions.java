@@ -6,12 +6,14 @@ import aeminium.gpu.operations.functions.LambdaMapper;
 import aeminium.gpu.operations.functions.LambdaReducer;
 
 public class BenchmarkDecisions {
-	public final static double RESOLUTION = 10000000.0;
+	
+	public static int MAX_LEVEL=10000000;
+	public static int MAX_TIMES=1;
 	
 	public static void main(String[] args) {
 	    int size = 10;
 	    int inc = 10;
-	    while (size < 10000000) {
+	    while (size < MAX_LEVEL) {
 	        runForNTimes(size);
 	        size += inc;
 	        if (size >= 10*inc) {
@@ -22,7 +24,7 @@ public class BenchmarkDecisions {
 
 	private static void runForNTimes(int N) {
 		System.out.println("Testing GPU vs GPU for N="+N);
-		for (int i = 0;i<10; i++) {
+		for (int i = 0;i<MAX_TIMES; i++) {
 			runForN(N);
 		}
 	}
@@ -96,7 +98,7 @@ public class BenchmarkDecisions {
 		
 		/* Integral */
 		System.out.println("> GPU op: factorial " + input.size());
-		PList<Integer> li = new Range((int)RESOLUTION);
+		PList<Integer> li = new Range(input.size());
 		
 		PList<Double> li2 = li.map(new LambdaMapper<Integer, Double>() {
 
@@ -129,6 +131,7 @@ public class BenchmarkDecisions {
 		
 		/* Integral */
 		System.out.println("> GPU op: fminimum " + input.size());
+		final double RESOLUTION = (double) input.size();
 		output2 = new Range((int)RESOLUTION).map(new LambdaMapper<Integer, Double>() {
 
 			@Override
