@@ -35,7 +35,7 @@ public class BenchmarkDecisions {
 		}
 		
 		/* UNIT */
-		System.out.println("GPU op: unit");
+		System.out.println("> GPU op: unit");
 		output = input.map(new LambdaMapper<Float, Float>() {
 
 			@Override
@@ -44,12 +44,12 @@ public class BenchmarkDecisions {
 			}
 			
 		});
-		System.out.println("First el of sum: " + output.get(0));
+		output.get(0);
 		
 		sleep();
 		
 		/* SIN */
-		System.out.println("GPU op: sin " + input.size());
+		System.out.println("> GPU op: sin " + input.size());
 		output = input.map(new LambdaMapper<Float, Float>() {
 
 			@Override
@@ -58,12 +58,12 @@ public class BenchmarkDecisions {
 			}
 			
 		});
-		System.out.println("First el of sin: " + output.get(0));
+		output.get(0);
 		
 		sleep();
 		
 		/* SIN and COS */
-		System.out.println("GPU op: sin+cos " + input.size());
+		System.out.println("> GPU op: sin+cos " + input.size());
 		output = input.map(new LambdaMapper<Float, Float>() {
 
 			@Override
@@ -72,12 +72,12 @@ public class BenchmarkDecisions {
 			}
 			
 		});
-		System.out.println("First el of sin+cos: " + output.get(0));
+		output.get(0);
 		
 		sleep();
 		
 		/* Factorial */
-		System.out.println("GPU op: factorial " + input.size());
+		System.out.println("> GPU op: factorial " + input.size());
 		output = input.map(new LambdaMapper<Float, Float>() {
 
 			@Override
@@ -90,12 +90,12 @@ public class BenchmarkDecisions {
 			}
 			
 		});
-		System.out.println("First el of factorial: " + output.get(0));
+		output.get(0);
 		
 		sleep();
 		
 		/* Integral */
-		System.out.println("GPU op: factorial " + input.size());
+		System.out.println("> GPU op: factorial " + input.size());
 		PList<Integer> li = new Range((int)RESOLUTION);
 		
 		PList<Double> li2 = li.map(new LambdaMapper<Integer, Double>() {
@@ -110,6 +110,7 @@ public class BenchmarkDecisions {
 			
 		});
 		
+		@SuppressWarnings("unused")
 		double output2 = li2.reduce(new LambdaReducer<Double>(){
 
 			@Override
@@ -123,12 +124,11 @@ public class BenchmarkDecisions {
 			}
 			
 		});
-		System.out.println("Integral: " + output2);
 		
 		sleep();
 		
 		/* Integral */
-		System.out.println("GPU op: fminimum " + input.size());
+		System.out.println("> GPU op: fminimum " + input.size());
 		output2 = new Range((int)RESOLUTION).map(new LambdaMapper<Integer, Double>() {
 
 			@Override
@@ -150,7 +150,6 @@ public class BenchmarkDecisions {
 			}
 			
 		});
-		System.out.println("FMinimum: " + output2);
 		
 		sleep();
 	}
