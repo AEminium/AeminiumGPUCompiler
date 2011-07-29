@@ -8,7 +8,7 @@ import aeminium.gpu.operations.functions.LambdaReducer;
 public class BenchmarkDecisions {
 	
 	public static int MAX_LEVEL=10000000;
-	public static int MAX_TIMES=1;
+	public static int MAX_TIMES=30;
 	
 	public static void main(String[] args) {
 	    int size = 10;
