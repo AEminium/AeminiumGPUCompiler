@@ -97,7 +97,7 @@ public class BenchmarkDecisions {
 		sleep();
 		
 		/* Integral */
-		System.out.println("> GPU op: factorial " + input.size());
+		System.out.println("> GPU op: integral " + input.size());
 		PList<Integer> li = new Range(input.size());
 		
 		PList<Double> li2 = li.map(new LambdaMapper<Integer, Double>() {
