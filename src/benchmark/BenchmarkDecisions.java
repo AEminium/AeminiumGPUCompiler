@@ -1,4 +1,6 @@
 package benchmark;
+import java.util.Random;
+
 import aeminium.gpu.collections.lazyness.Range;
 import aeminium.gpu.collections.lists.FloatList;
 import aeminium.gpu.collections.lists.PList;
@@ -9,6 +11,17 @@ public class BenchmarkDecisions {
 	
 	public static int MAX_LEVEL=10000000;
 	public static int MAX_TIMES=30;
+	
+	
+	private static PList<Float> generateRandomIntList(int size) {
+		Random r = new Random(123412341234L);
+		PList<Float> t = new FloatList();
+		for (int i = 0; i < size; i++) {
+			t.add((float) r.nextFloat());
+		}
+		return t;
+	}
+	
 	
 	public static void main(String[] args) {
 	    int size = 10;
@@ -31,10 +44,7 @@ public class BenchmarkDecisions {
 	
 	private static void runForN(int N) {
 		PList<Float> output;
-		PList<Float> input = new FloatList();
-		for (int i = 0; i < N; i++) {
-			input.add((float) i);
-		}
+		PList<Float> input = generateRandomIntList(N);
 		
 		/* UNIT */
 		System.out.println("> GPU op: unit");
