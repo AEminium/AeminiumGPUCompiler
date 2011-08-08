@@ -5,6 +5,7 @@ import spoon.reflect.declaration.CtClass;
 import spoon.reflect.declaration.CtMethod;
 import spoon.template.Substitution;
 import spoon.template.Template;
+import aeminium.gpu.compiler.processing.estimation.ExpressionEstimatorVisitor;
 import aeminium.gpu.compiler.template.ReduceLambdaTemplate;
 import aeminium.gpu.devices.DefaultDeviceFactory;
 import aeminium.gpu.devices.GPUDevice;
@@ -15,6 +16,7 @@ public class ReduceLambdaProcessor<T>  extends AbstractLambdaProcessor<T>{
 	private String seedCode;
 	private String inputType;
 	private String outputType;
+	private String cost;
 	
 	@Override
 	public void process(CtClass<T> target) {
@@ -26,6 +28,11 @@ public class ReduceLambdaProcessor<T>  extends AbstractLambdaProcessor<T>{
 						inputType = m.getParameters().get(0).getType().getQualifiedName();
 						outputType = m.getType().getQualifiedName();
 						parseParameters(m);
+						
+						/* Cost estimation */
+						ExpressionEstimatorVisitor estimator = new ExpressionEstimatorVisitor();
+						m.getBody().accept(estimator);
+						cost = estimator.getExpressionString();
 						
 						clCode = checkMethodBody(m);
 					}
@@ -49,7 +56,8 @@ public class ReduceLambdaProcessor<T>  extends AbstractLambdaProcessor<T>{
 		if (canSubstitute && clCode != null && seedCode != null) {
 			String id = getOpId("reduce", target);
 			preCompile(target, clCode, seedCode, id);
-			Template t = new ReduceLambdaTemplate(clCode, seedCode, id, params);
+
+			Template t = new ReduceLambdaTemplate(clCode, seedCode, id, params, cost);
 			Substitution.insertAllMethods(target, t);
 		}
 	}

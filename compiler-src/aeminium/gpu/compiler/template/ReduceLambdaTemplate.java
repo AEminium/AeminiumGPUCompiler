@@ -18,6 +18,9 @@ public class ReduceLambdaTemplate implements Template {
 	@Parameter
 	String[] _pars_;
 	
+	@Parameter
+	String _est_;
+	
 	public String getSeedSource() {
 		return _seedcode_;
 	}
@@ -33,12 +36,16 @@ public class ReduceLambdaTemplate implements Template {
 	public String[] getParameters() {
 		return _pars_;
 	}
+	public String getSourceComplexity() {
+		return _est_;
+	}
 
 	@Local
-	public ReduceLambdaTemplate(String code, String seedcode, String id, String[] pars) {
+	public ReduceLambdaTemplate(String code, String seedcode, String id, String[] pars, String est) {
 		_code_ = code;
 		_seedcode_ = seedcode;
 		_id_ = id;
 		_pars_ = pars;
+		_est_ = est;
 	}
 }
