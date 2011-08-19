@@ -26,7 +26,7 @@ public class BenchmarkDecisions {
 	public static void main(String[] args) {
 	    int size = 10;
 	    int inc = 10;
-	    while (size < MAX_LEVEL) {
+	    while (size <= MAX_LEVEL) {
 	        runForNTimes(size);
 	        size += inc;
 	        if (size >= 10*inc) {
