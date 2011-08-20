@@ -10,7 +10,7 @@ import aeminium.gpu.operations.functions.LambdaReducer;
 public class BenchmarkDecisions {
 	
 	public static int MAX_LEVEL=10000000;
-	public static int MAX_TIMES=30;
+	public static int MAX_TIMES=10;
 	
 	
 	private static PList<Float> generateRandomIntList(int size) {
@@ -195,7 +195,7 @@ public class BenchmarkDecisions {
 
 	private static void sleep() {
 		try {
-			Thread.sleep(1000);
+			Thread.sleep(50);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
