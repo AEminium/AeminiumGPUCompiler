@@ -3,6 +3,7 @@ import java.util.Random;
 
 import aeminium.gpu.collections.lazyness.Range;
 import aeminium.gpu.collections.lists.FloatList;
+import aeminium.gpu.collections.lists.IntList;
 import aeminium.gpu.collections.lists.PList;
 import aeminium.gpu.operations.functions.LambdaMapper;
 import aeminium.gpu.operations.functions.LambdaReducer;
@@ -13,11 +14,20 @@ public class BenchmarkDecisions {
 	public static int MAX_TIMES=10;
 	
 	
-	private static PList<Float> generateRandomIntList(int size) {
+	private static PList<Float> generateRandomFloatList(int size) {
 		Random r = new Random(123412341234L);
 		PList<Float> t = new FloatList();
 		for (int i = 0; i < size; i++) {
 			t.add((float) r.nextFloat());
+		}
+		return t;
+	}
+	
+	private static PList<Integer> generateRandomIntList(int size) {
+		Random r = new Random(123412341234L);
+		PList<Integer> t = new IntList();
+		for (int i = 0; i < size; i++) {
+			t.add((int) r.nextInt());
 		}
 		return t;
 	}
@@ -44,7 +54,8 @@ public class BenchmarkDecisions {
 	
 	private static void runForN(int N) {
 		PList<Float> output;
-		PList<Float> input = generateRandomIntList(N);
+		PList<Float> input = generateRandomFloatList(N);
+		PList<Integer> input2 = generateRandomIntList(N);
 		
 		/* UNIT */
 		System.out.println("> GPU op: unit");
@@ -195,7 +206,7 @@ public class BenchmarkDecisions {
 		/* Sumdiv with data */
 		System.out.println("> GPU op: sumdiv2 " + input.size());
 		
-		output2 = input.map(new LambdaMapper<Integer, Long>() {
+		output2 = input2.map(new LambdaMapper<Integer, Long>() {
 
 			@Override
 			public Long map(Integer input) {
