@@ -47,7 +47,7 @@ public class MapReduceExample {
 			
 			@Override
 			public Integer getSeed() {
-				return 10000000;
+				return Integer.MAX_VALUE;
 			}
 			
 		});
