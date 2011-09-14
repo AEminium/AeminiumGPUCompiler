@@ -166,10 +166,36 @@ public class BenchmarkDecisions {
 		
 		sleep();
 		
-		/* FMinimum */
+		/* Sumdiv */
 		System.out.println("> GPU op: sumdiv " + input.size());
 		
 		output2 = new Range(input.size()).map(new LambdaMapper<Integer, Long>() {
+
+			@Override
+			public Long map(Integer input) {
+				return (input+1) % 7 == 0 ? (long)input+1 : 0L;
+			}
+			
+		}).reduce(new LambdaReducer<Long>(){
+
+			@Override
+			public Long combine(Long input, Long other) {
+				return input + other;
+			}
+			
+			@Override
+			public Long getSeed() {
+				return 0L;
+			}
+			
+		});
+		
+		sleep();
+		
+		/* Sumdiv with data */
+		System.out.println("> GPU op: sumdiv2 " + input.size());
+		
+		output2 = input.map(new LambdaMapper<Integer, Long>() {
 
 			@Override
 			public Long map(Integer input) {
