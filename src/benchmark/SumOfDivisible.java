@@ -2,7 +2,7 @@ package benchmark;
 
 import aeminium.gpu.collections.lazyness.Range;
 import aeminium.gpu.operations.functions.LambdaMapper;
-import aeminium.gpu.operations.functions.LambdaReducer;
+import aeminium.gpu.operations.functions.LambdaReducerWithSeed;
 
 
 // This class computes the sum of the 1M first natural numbers that are divisible by 7.
@@ -45,7 +45,7 @@ public class SumOfDivisible {
 				return (input+1) % 7 == 0 ? (long)input+1 : 0L;
 			}
 			
-		}).reduce(new LambdaReducer<Long>(){
+		}).reduce(new LambdaReducerWithSeed<Long>(){
 
 			@Override
 			public Long combine(Long input, Long other) {

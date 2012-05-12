@@ -6,7 +6,7 @@ import aeminium.gpu.collections.lazyness.Range;
 import aeminium.gpu.collections.lists.FloatList;
 import aeminium.gpu.collections.lists.PList;
 import aeminium.gpu.operations.functions.LambdaMapper;
-import aeminium.gpu.operations.functions.LambdaReducer;
+import aeminium.gpu.operations.functions.LambdaReducerWithSeed;
 
 public class RandomBenchmarkDecision {
 
@@ -120,7 +120,7 @@ public class RandomBenchmarkDecision {
 		});
 		
 		@SuppressWarnings("unused")
-		double output2 = li2.reduce(new LambdaReducer<Double>(){
+		double output2 = li2.reduce(new LambdaReducerWithSeed<Double>(){
 
 			@Override
 			public Double combine(Double input, Double other) {
@@ -147,7 +147,7 @@ public class RandomBenchmarkDecision {
 				return 10 * Math.pow(x, 6) + Math.pow(x, 5)  + 2 * Math.pow(x, 4) + 3 * x * x * x + 2/5*x*x +Math.PI * x;
 			}
 			
-		}).reduce(new LambdaReducer<Double>(){
+		}).reduce(new LambdaReducerWithSeed<Double>(){
 
 			@Override
 			public Double combine(Double input, Double other) {

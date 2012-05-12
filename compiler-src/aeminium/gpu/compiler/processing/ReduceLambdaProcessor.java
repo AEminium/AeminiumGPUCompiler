@@ -21,7 +21,8 @@ public class ReduceLambdaProcessor<T>  extends AbstractLambdaProcessor<T>{
 	@Override
 	public void process(CtClass<T> target) {
 		if (target.getSuperclass() != null) {
-			if (target.getSuperclass().toString().equals("aeminium.gpu.operations.functions.LambdaReducer")) {
+			if (target.getSuperclass().toString().equals("aeminium.gpu.operations.functions.LambdaReducer")
+					|| target.getSuperclass().toString().equals("aeminium.gpu.operations.functions.LambdaReducerWithSeed") ) {
 				for(CtMethod<?> m : target.getMethods()) {
 					if (m.getSimpleName().equals("combine")) {
 						// Extract useful info

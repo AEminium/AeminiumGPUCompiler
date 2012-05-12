@@ -3,7 +3,7 @@ package benchmark;
 import aeminium.gpu.collections.lazyness.Range;
 import aeminium.gpu.collections.lists.PList;
 import aeminium.gpu.operations.functions.LambdaMapper;
-import aeminium.gpu.operations.functions.LambdaReducer;
+import aeminium.gpu.operations.functions.LambdaReducerWithSeed;
 
 
 /*
@@ -55,7 +55,7 @@ public static final double RESOLUTION = 10000000.0;
 			
 		});
 		
-		return li2.reduce(new LambdaReducer<Double>(){
+		return li2.reduce(new LambdaReducerWithSeed<Double>(){
 
 			@Override
 			public Double combine(Double input, Double other) {

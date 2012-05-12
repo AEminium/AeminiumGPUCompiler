@@ -6,7 +6,7 @@ import aeminium.gpu.collections.lists.FloatList;
 import aeminium.gpu.collections.lists.IntList;
 import aeminium.gpu.collections.lists.PList;
 import aeminium.gpu.operations.functions.LambdaMapper;
-import aeminium.gpu.operations.functions.LambdaReducer;
+import aeminium.gpu.operations.functions.LambdaReducerWithSeed;
 
 public class BenchmarkDecisions {
 	
@@ -134,7 +134,7 @@ public class BenchmarkDecisions {
 		});
 		
 		@SuppressWarnings("unused")
-		double output2 = li2.reduce(new LambdaReducer<Double>(){
+		double output2 = li2.reduce(new LambdaReducerWithSeed<Double>(){
 
 			@Override
 			public Double combine(Double input, Double other) {
@@ -161,7 +161,7 @@ public class BenchmarkDecisions {
 				return 10 * Math.pow(x, 6) + Math.pow(x, 5)  + 2 * Math.pow(x, 4) + 3 * x * x * x + 2/5*x*x +Math.PI * x;
 			}
 			
-		}).reduce(new LambdaReducer<Double>(){
+		}).reduce(new LambdaReducerWithSeed<Double>(){
 
 			@Override
 			public Double combine(Double input, Double other) {
@@ -187,7 +187,7 @@ public class BenchmarkDecisions {
 				return (input+1) % 7 == 0 ? (long)input+1 : 0L;
 			}
 			
-		}).reduce(new LambdaReducer<Long>(){
+		}).reduce(new LambdaReducerWithSeed<Long>(){
 
 			@Override
 			public Long combine(Long input, Long other) {
@@ -213,7 +213,7 @@ public class BenchmarkDecisions {
 				return (input+1) % 7 == 0 ? (long)input+1 : 0L;
 			}
 			
-		}).reduce(new LambdaReducer<Long>(){
+		}).reduce(new LambdaReducerWithSeed<Long>(){
 
 			@Override
 			public Long combine(Long input, Long other) {

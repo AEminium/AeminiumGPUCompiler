@@ -3,7 +3,7 @@ package code;
 import aeminium.gpu.collections.lists.IntList;
 import aeminium.gpu.collections.lists.PList;
 import aeminium.gpu.operations.functions.LambdaMapper;
-import aeminium.gpu.operations.functions.LambdaReducer;
+import aeminium.gpu.operations.functions.LambdaReducerWithSeed;
 
 public class MapReduceExample {
 	public static void main(String[] args) {
@@ -23,7 +23,7 @@ public class MapReduceExample {
 			
 		});
 		input.get(0);
-		int sum = input.reduce(new LambdaReducer<Integer>(){
+		int sum = input.reduce(new LambdaReducerWithSeed<Integer>(){
 
 			@Override
 			public Integer combine(Integer input, Integer other) {
@@ -38,7 +38,7 @@ public class MapReduceExample {
 		});
 		System.out.println("The sum of the first " + N + " numbers is " + sum);
 		
-		sum = input.reduce(new LambdaReducer<Integer>(){
+		sum = input.reduce(new LambdaReducerWithSeed<Integer>(){
 
 			@Override
 			public Integer combine(Integer input, Integer other) {
