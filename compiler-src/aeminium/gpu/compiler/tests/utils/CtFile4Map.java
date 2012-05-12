@@ -13,9 +13,9 @@ public class CtFile4Map extends CtFile4BodySnippet {
 		StringBuilder mainb = new StringBuilder();
 		mainb.append("import aeminium.gpu.operations.Lambda;");
 		mainb.append("import aeminium.gpu.lists.IntList;");
-		
+
 		StringBuilder b = new StringBuilder();
-		
+
 		b.append("IntList l = new IntList();");
 		b.append("l.map(new Lambda<Integer, Integer>() {\n");
 		b.append("  @Override\n");
@@ -23,12 +23,10 @@ public class CtFile4Map extends CtFile4BodySnippet {
 		b.append("    " + snippet.replaceAll("\n", "\n      ") + "\n");
 		b.append("  }\n");
 		b.append("});\n");
-		
-		String fullClass = super.makeContent(b.toString()); 
+
+		String fullClass = super.makeContent(b.toString());
 		mainb.append(fullClass);
 		return mainb.toString();
 	}
-	
-	
 
 }

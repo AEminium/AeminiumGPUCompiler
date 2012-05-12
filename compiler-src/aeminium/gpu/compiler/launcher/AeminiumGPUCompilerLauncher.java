@@ -17,7 +17,7 @@ public class AeminiumGPUCompilerLauncher extends Launcher {
 	public AeminiumGPUCompilerLauncher(String[] args) throws JSAPException {
 		super(args);
 	}
-	
+
 	@Override
 	protected List<String> getProcessorTypes() {
 		List<String> l = super.getProcessorTypes();
@@ -30,24 +30,23 @@ public class AeminiumGPUCompilerLauncher extends Launcher {
 	protected List<CtResource> getTemplateSources() {
 		List<CtResource> l = super.getTemplateSources();
 		try {
-			l.add(new CtFolderFile(new File("compiler-src/aeminium/gpu/compiler/template")));
+			l.add(new CtFolderFile(new File(
+					"compiler-src/aeminium/gpu/compiler/template")));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		return l;
 	}
-	
+
 	public static void main(String[] args) {
 		try {
-			AeminiumGPUCompilerLauncher launcher = new AeminiumGPUCompilerLauncher(args);
+			AeminiumGPUCompilerLauncher launcher = new AeminiumGPUCompilerLauncher(
+					args);
 			launcher.run();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
 	}
-
-
-	
 
 }

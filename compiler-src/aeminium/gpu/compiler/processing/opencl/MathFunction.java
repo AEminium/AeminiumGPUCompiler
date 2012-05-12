@@ -4,19 +4,18 @@ public class MathFunction {
 
 	private CLType[] argumentTypes;
 	private CLType returnType;
-	
+
 	private String openclName;
-	
+
 	private String qClass;
 	private String methodName;
-	
-	public MathFunction(String qClass, String methodName, 
-			String openclName) {
+
+	public MathFunction(String qClass, String methodName, String openclName) {
 		this(qClass, methodName, openclName, null, new CLType[] {});
 	}
-	
-	public MathFunction(String qClass, String methodName, 
-			String openclName, CLType returnType, CLType[] argumentTypes) {
+
+	public MathFunction(String qClass, String methodName, String openclName,
+			CLType returnType, CLType[] argumentTypes) {
 		super();
 		this.argumentTypes = argumentTypes;
 		this.openclName = openclName;
@@ -24,7 +23,7 @@ public class MathFunction {
 		this.qClass = qClass;
 		this.methodName = methodName;
 	}
-	
+
 	public CLType[] getArgumentTypes() {
 		return argumentTypes;
 	}
@@ -44,6 +43,5 @@ public class MathFunction {
 	public String getMethodName() {
 		return methodName;
 	}
-	
-	
+
 }

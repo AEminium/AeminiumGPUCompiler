@@ -68,32 +68,32 @@ import spoon.reflect.visitor.CtVisitor;
 import aeminium.gpu.compiler.processing.utils.CodeGenerationContext;
 
 public class OpenCLCodeGeneratorVisitor implements CtVisitor {
-	
+
 	private boolean isPossible = true;
-	
+
 	protected CtElement root;
 	protected String[] input_vars;
 	protected ArrayList<String> arguments = new ArrayList<String>();
 	protected Environment env;
 	protected CodeGenerationContext context = new CodeGenerationContext();
 	private StringBuffer sbf = new StringBuffer();
-	
+
 	public OpenCLCodeGeneratorVisitor(Environment e, String[] vars, CtElement r) {
 		env = e;
 		input_vars = vars;
 		root = r;
 	}
-	
+
 	/* Wanted Methods */
-	
+
 	public boolean canBeGenerated() {
 		return isPossible;
 	}
-	
+
 	public String toString() {
 		return sbf.toString();
 	}
-	
+
 	/* General Scan Functions */
 	public OpenCLCodeGeneratorVisitor scan(CtElement e) {
 		if (e != null) {
@@ -101,30 +101,30 @@ public class OpenCLCodeGeneratorVisitor implements CtVisitor {
 		}
 		return this;
 	}
-	
+
 	public OpenCLCodeGeneratorVisitor scan(CtReference ref) {
 		if (ref != null) {
 			ref.accept(this);
 		}
 		return this;
 	}
-	
+
 	public OpenCLCodeGeneratorVisitor write(String s) {
 		if (s != null) {
 			sbf.append(s);
 		}
 		return this;
 	}
-	
+
 	private OpenCLCodeGeneratorVisitor writeln() {
 		write("\n");
 		return this;
 	}
-	
+
 	private boolean isWhite(char c) {
 		return (c == ' ') || (c == '\t') || (c == '\n');
 	}
-	
+
 	private OpenCLCodeGeneratorVisitor removeLastChar() {
 		while (isWhite(sbf.charAt(sbf.length() - 1))) {
 			sbf.deleteCharAt(sbf.length() - 1);
@@ -135,7 +135,7 @@ public class OpenCLCodeGeneratorVisitor implements CtVisitor {
 		}
 		return this;
 	}
-	
+
 	public static String quote(String s) {
 		StringBuffer buf = new StringBuffer();
 		for (int i = 0; i < s.length(); i++) {
@@ -178,15 +178,15 @@ public class OpenCLCodeGeneratorVisitor implements CtVisitor {
 		}
 		return buf.toString();
 	}
-	
+
 	private void cancelConversion(Object o) {
 		isPossible = false;
 		if (env.isVerbose() || System.getenv("DEBUG") != null) {
-			System.out.println("CL conversion impossible because of: " + o + "," + o.getClass());
+			System.out.println("CL conversion impossible because of: " + o
+					+ "," + o.getClass());
 		}
 	}
-	
-	
+
 	/* Entering and Leaving */
 	protected void enterCtExpression(CtExpression<?> e) {
 		if (shouldSetBracket(e)) {
@@ -217,7 +217,7 @@ public class OpenCLCodeGeneratorVisitor implements CtVisitor {
 			write(")");
 		}
 	}
-	
+
 	private boolean shouldSetBracket(CtExpression<?> e) {
 		if (e.getTypeCasts().size() != 0) {
 			return true;
@@ -234,46 +234,44 @@ public class OpenCLCodeGeneratorVisitor implements CtVisitor {
 					|| (e instanceof CtAssignment)
 					|| (e instanceof CtConditional);
 		}
-	
+
 		return false;
 	}
-	
+
 	/* Tabs */
-	
+
 	public OpenCLCodeGeneratorVisitor incTab() {
 		context.nbTabs++;
 		return this;
 	}
-	
+
 	public OpenCLCodeGeneratorVisitor decTab() {
 		context.nbTabs--;
 		return this;
 	}
-	
+
 	public OpenCLCodeGeneratorVisitor setTabCount(int tabCount) {
 		context.nbTabs = tabCount;
 		return this;
 	}
-	
+
 	/* Code snippets */
-	
+
 	private void writeStatement(CtStatement e) {
-		if ( (e instanceof CtTry) 
-			|| (e instanceof CtSynchronized)
-			|| (e instanceof CtForEach)
-		) {
+		if ((e instanceof CtTry) || (e instanceof CtSynchronized)
+				|| (e instanceof CtForEach)) {
 			cancelConversion(e);
 		} else {
 			scan(e);
 			if (!((e instanceof CtBlock) || (e instanceof CtIf)
-					|| (e instanceof CtFor) 
-					|| (e instanceof CtWhile) || (e instanceof CtSwitch) )) {
+					|| (e instanceof CtFor) || (e instanceof CtWhile) || (e instanceof CtSwitch))) {
 				write(";");
 			}
 		}
 	}
-	
-	private <T> OpenCLCodeGeneratorVisitor writeLocalVariable(CtLocalVariable<T> localVariable) {
+
+	private <T> OpenCLCodeGeneratorVisitor writeLocalVariable(
+			CtLocalVariable<T> localVariable) {
 		if (!context.noTypeDecl) {
 			scan(localVariable.getType());
 			write(" ");
@@ -285,74 +283,73 @@ public class OpenCLCodeGeneratorVisitor implements CtVisitor {
 		}
 		return this;
 	}
-	
+
 	private OpenCLCodeGeneratorVisitor writeOperator(BinaryOperatorKind o) {
-			switch (o) {
-			case OR:
-				write("||");
-				break;
-			case AND:
-				write("&&");
-				break;
-			case BITOR:
-				write("|");
-				break;
-			case BITXOR:
-				write("^");
-				break;
-			case BITAND:
-				write("&");
-				break;
-			case EQ:
-				write("==");
-				break;
-			case NE:
-				write("!=");
-				break;
-			case LT:
-				write("<");
-				break;
-			case GT:
-				write(">");
-				break;
-			case LE:
-				write("<=");
-				break;
-			case GE:
-				write(">=");
-				break;
-			case SL:
-				write("<<");
-				break;
-			case SR:
-				write(">>");
-				break;
-			case USR:
-				write(">>>");
-				break;
-			case PLUS:
-				write("+");
-				break;
-			case MINUS:
-				write("-");
-				break;
-			case MUL:
-				write("*");
-				break;
-			case DIV:
-				write("/");
-				break;
-			case MOD:
-				write("%");
-				break;
-			case INSTANCEOF:
-				cancelConversion("instanceof");
-				break;
-			}
-			return this;
+		switch (o) {
+		case OR:
+			write("||");
+			break;
+		case AND:
+			write("&&");
+			break;
+		case BITOR:
+			write("|");
+			break;
+		case BITXOR:
+			write("^");
+			break;
+		case BITAND:
+			write("&");
+			break;
+		case EQ:
+			write("==");
+			break;
+		case NE:
+			write("!=");
+			break;
+		case LT:
+			write("<");
+			break;
+		case GT:
+			write(">");
+			break;
+		case LE:
+			write("<=");
+			break;
+		case GE:
+			write(">=");
+			break;
+		case SL:
+			write("<<");
+			break;
+		case SR:
+			write(">>");
+			break;
+		case USR:
+			write(">>>");
+			break;
+		case PLUS:
+			write("+");
+			break;
+		case MINUS:
+			write("-");
+			break;
+		case MUL:
+			write("*");
+			break;
+		case DIV:
+			write("/");
+			break;
+		case MOD:
+			write("%");
+			break;
+		case INSTANCEOF:
+			cancelConversion("instanceof");
+			break;
+		}
+		return this;
 	}
-	
-	
+
 	void preWriteUnaryOperator(UnaryOperatorKind o) {
 		switch (o) {
 		case POS:
@@ -375,7 +372,7 @@ public class OpenCLCodeGeneratorVisitor implements CtVisitor {
 			break;
 		}
 	}
-	
+
 	protected void postWriteUnaryOperator(UnaryOperatorKind o) {
 		switch (o) {
 		case POSTINC:
@@ -386,10 +383,9 @@ public class OpenCLCodeGeneratorVisitor implements CtVisitor {
 			break;
 		}
 	}
-	
-	
+
 	/* AST Parsing */
-	
+
 	@Override
 	public <A extends Annotation> void visitCtAnnotation(
 			CtAnnotation<A> annotation) {
@@ -397,19 +393,16 @@ public class OpenCLCodeGeneratorVisitor implements CtVisitor {
 		// TODO: Idea: Add OpenCL version of code via annotations.
 	}
 
-
 	@Override
 	public <T> void visitCtCodeSnippetExpression(
 			CtCodeSnippetExpression<T> expression) {
 		// Ignore for compiler
 	}
 
-
 	@Override
 	public void visitCtCodeSnippetStatement(CtCodeSnippetStatement statement) {
 		// Ignore for compiler
 	}
-
 
 	@Override
 	public <A extends Annotation> void visitCtAnnotationType(
@@ -417,12 +410,10 @@ public class OpenCLCodeGeneratorVisitor implements CtVisitor {
 		// Nothing to do
 	}
 
-
 	@Override
 	public void visitCtAnonymousExecutable(CtAnonymousExecutable anonymousExec) {
 		// Ignore for Compiler
 	}
-
 
 	@Override
 	public <T, E extends CtExpression<?>> void visitCtArrayAccess(
@@ -433,13 +424,10 @@ public class OpenCLCodeGeneratorVisitor implements CtVisitor {
 		write("]");
 	}
 
-
 	@Override
 	public <T> void visitCtArrayTypeReference(CtArrayTypeReference<T> reference) {
 		scan(reference.getComponentType());
 	}
-
-	
 
 	@Override
 	public <T> void visitCtAssert(CtAssert<T> asserted) {
@@ -457,7 +445,6 @@ public class OpenCLCodeGeneratorVisitor implements CtVisitor {
 		exitCtExpression(assignement);
 	}
 
-
 	@Override
 	public <T> void visitCtBinaryOperator(CtBinaryOperator<T> operator) {
 		enterCtExpression(operator);
@@ -474,9 +461,6 @@ public class OpenCLCodeGeneratorVisitor implements CtVisitor {
 		}
 		exitCtExpression(operator);
 	}
-
-
-
 
 	@Override
 	public <R> void visitCtBlock(CtBlock<R> block) {
@@ -500,7 +484,6 @@ public class OpenCLCodeGeneratorVisitor implements CtVisitor {
 		}
 	}
 
-
 	@SuppressWarnings("rawtypes")
 	@Override
 	public <S> void visitCtCase(CtCase<S> caseStatement) {
@@ -510,11 +493,12 @@ public class OpenCLCodeGeneratorVisitor implements CtVisitor {
 			// writing enum case expression
 			if ((caseStatement.getCaseExpression() instanceof CtFieldAccess)
 					&& ((CtFieldAccess) caseStatement.getCaseExpression())
-							.getVariable().getType().getQualifiedName().equals(
-									((CtFieldAccess) caseStatement
-											.getCaseExpression()).getVariable()
-											.getDeclaringType()
-											.getQualifiedName())) {
+							.getVariable()
+							.getType()
+							.getQualifiedName()
+							.equals(((CtFieldAccess) caseStatement
+									.getCaseExpression()).getVariable()
+									.getDeclaringType().getQualifiedName())) {
 				write(((CtFieldAccess) caseStatement.getCaseExpression())
 						.getVariable().getSimpleName());
 			} else {
@@ -529,9 +513,8 @@ public class OpenCLCodeGeneratorVisitor implements CtVisitor {
 			writeln().writeStatement(s);
 		}
 		decTab();
-		
-	}
 
+	}
 
 	@Override
 	public void visitCtCatch(CtCatch catchBlock) {
@@ -539,12 +522,10 @@ public class OpenCLCodeGeneratorVisitor implements CtVisitor {
 		cancelConversion(catchBlock);
 	}
 
-
 	@Override
 	public <T> void visitCtClass(CtClass<T> ctClass) {
 		cancelConversion(ctClass);
 	}
-
 
 	@Override
 	public <T> void visitCtConditional(CtConditional<T> conditional) {
@@ -557,20 +538,17 @@ public class OpenCLCodeGeneratorVisitor implements CtVisitor {
 		exitCtExpression(conditional);
 	}
 
-
 	@Override
 	public <T> void visitCtConstructor(CtConstructor<T> c) {
 		// TODO: Need to support Integers and Other Wrappers
 		cancelConversion(c);
 	}
 
-
 	@Override
 	public void visitCtContinue(CtContinue continueStatement) {
 		enterCtStatement(continueStatement);
 		write("continue");
 	}
-
 
 	@Override
 	public void visitCtDo(CtDo doLoop) {
@@ -579,15 +557,13 @@ public class OpenCLCodeGeneratorVisitor implements CtVisitor {
 		writeStatement(doLoop.getBody());
 		write(" while (");
 		scan(doLoop.getLoopingExpression());
-		write(" )");		
+		write(" )");
 	}
-
 
 	@Override
 	public <T extends Enum<?>> void visitCtEnum(CtEnum<T> ctEnum) {
 		cancelConversion(ctEnum);
 	}
-
 
 	@Override
 	public <T> void visitCtExecutableReference(
@@ -595,25 +571,24 @@ public class OpenCLCodeGeneratorVisitor implements CtVisitor {
 		// Ignore for compiler
 	}
 
-
 	@Override
 	public <T> void visitCtField(CtField<T> f) {
 		// Should not get here.
 		cancelConversion(f);
 	}
 
-
 	@SuppressWarnings("rawtypes")
 	@Override
 	public <T> void visitCtFieldAccess(CtFieldAccess<T> fieldAccess) {
 		CtFieldReference var = fieldAccess.getVariable();
-		
+
 		if (MathConverter.hasConstant(var.getQualifiedName())) {
 			write(MathConverter.getConstant(var.getQualifiedName()));
 		} else if (var.isFinal()) {
 			if (var.getDeclaration() != null) {
 				scan(var.getDeclaration().getDefaultExpression());
-			} else if (BoxedTypes.typeVariables.containsKey(var.getQualifiedName())) {
+			} else if (BoxedTypes.typeVariables.containsKey(var
+					.getQualifiedName())) {
 				write(BoxedTypes.typeVariables.get(var.getQualifiedName()));
 			} else {
 				cancelConversion(fieldAccess);
@@ -623,13 +598,11 @@ public class OpenCLCodeGeneratorVisitor implements CtVisitor {
 		}
 	}
 
-
 	@Override
 	public <T> void visitCtFieldReference(CtFieldReference<T> reference) {
 		// TODO: Implement Math stuff.
 		cancelConversion(reference);
 	}
-
 
 	@Override
 	public void visitCtFor(CtFor forLoop) {
@@ -668,13 +641,11 @@ public class OpenCLCodeGeneratorVisitor implements CtVisitor {
 		}
 	}
 
-
 	@Override
 	public void visitCtForEach(CtForEach foreach) {
 		cancelConversion(foreach);
 		// TODO: Maybe go through the array_list or sth?
 	}
-
 
 	@Override
 	public void visitCtIf(CtIf ifElement) {
@@ -709,7 +680,6 @@ public class OpenCLCodeGeneratorVisitor implements CtVisitor {
 		}
 	}
 
-
 	@Override
 	public <T> void visitCtInterface(CtInterface<T> intrface) {
 		cancelConversion(intrface);
@@ -719,31 +689,33 @@ public class OpenCLCodeGeneratorVisitor implements CtVisitor {
 	@Override
 	public <T> void visitCtInvocation(CtInvocation<T> invocation) {
 		CtExecutableReference<T> ex = invocation.getExecutable();
-		
+
 		String qualifiedName = ex.getDeclaringType().getQualifiedName();
 		String methodname = ex.getSimpleName();
-		
+
 		if (MathConverter.hasMethod(qualifiedName, methodname)) {
-			MathFunction f = MathConverter.getMathFunction(qualifiedName, methodname);
-			
+			MathFunction f = MathConverter.getMathFunction(qualifiedName,
+					methodname);
+
 			enterCtExpression(invocation);
-			
+
 			// Ensure OpenCL and Java compability
 			write(CastHelper.getReturnTypeCast(f.getReturnType(), ex.getType()));
-			
+
 			write(f.getOpenCLName());
-			
+
 			write("(");
-			boolean remove = false; 
+			boolean remove = false;
 			int argIndex = 0;
 			CLType[] innerCasts = f.getArgumentTypes();
-			for (CtExpression o: invocation.getArguments()) {
-				
+			for (CtExpression o : invocation.getArguments()) {
+
 				if (innerCasts.length > argIndex) {
 					// Check arguments for required casts
-					write(CastHelper.getReturnTypeCast(innerCasts[argIndex], o.getType()));
+					write(CastHelper.getReturnTypeCast(innerCasts[argIndex],
+							o.getType()));
 				}
-				
+
 				o.accept(this);
 				remove = true;
 				write(", ");
@@ -759,37 +731,35 @@ public class OpenCLCodeGeneratorVisitor implements CtVisitor {
 		}
 	}
 
-
 	@Override
 	public <T> void visitCtLiteral(CtLiteral<T> literal) {
 		enterCtExpression(literal);
 		if (literal.getValue() == null) {
 			write("null");
 		} else if (literal.getValue() instanceof Long) {
-			write(literal.getValue()+"");
+			write(literal.getValue() + "");
 		} else if (literal.getValue() instanceof Float) {
-			write(literal.getValue()+"");
+			write(literal.getValue() + "");
 		} else if (literal.getValue() instanceof Character) {
 			write("'");
 			write(quote(String.valueOf(literal.getValue())));
 			write("'");
 		} else if (literal.getValue() instanceof String) {
-			// TODO: String 
-			//write("\"" + quote((String) literal.getValue()) + "\"");
+			// TODO: String
+			// write("\"" + quote((String) literal.getValue()) + "\"");
 			cancelConversion(literal.getValue());
 		} else if (literal.getValue() instanceof Class) {
 			// TODO: Math stuff
 			cancelConversion(literal.getValue());
-			//write(((Class<?>) literal.getValue()).getName());
+			// write(((Class<?>) literal.getValue()).getName());
 		} else if (literal.getValue() instanceof CtReference) {
 			scan((CtReference) literal.getValue());
 		} else {
 			write(literal.getValue().toString());
 		}
 		exitCtExpression(literal);
-		
-	}
 
+	}
 
 	@Override
 	public <T> void visitCtLocalVariable(CtLocalVariable<T> localVariable) {
@@ -797,20 +767,17 @@ public class OpenCLCodeGeneratorVisitor implements CtVisitor {
 		writeLocalVariable(localVariable);
 	}
 
-
 	@Override
 	public <T> void visitCtLocalVariableReference(
 			CtLocalVariableReference<T> reference) {
 		write(reference.getSimpleName());
 	}
 
-
 	@Override
 	public <T> void visitCtMethod(CtMethod<T> m) {
 		// TODO: Allow for method definition
 		cancelConversion(m);
 	}
-
 
 	@SuppressWarnings("rawtypes")
 	@Override
@@ -850,18 +817,17 @@ public class OpenCLCodeGeneratorVisitor implements CtVisitor {
 		exitCtExpression(newArray);
 	}
 
-
 	@Override
 	public <T> void visitCtNewClass(CtNewClass<T> newClass) {
-		String kl = newClass.getExecutable().getDeclaringType().getQualifiedName();
-		
+		String kl = newClass.getExecutable().getDeclaringType()
+				.getQualifiedName();
+
 		if (BoxedTypes.hasClass(kl)) {
 			scan(newClass.getArguments().get(0));
 		} else {
 			cancelConversion(newClass);
 		}
 	}
-
 
 	@Override
 	public <T, A extends T> void visitCtOperatorAssignement(
@@ -876,13 +842,11 @@ public class OpenCLCodeGeneratorVisitor implements CtVisitor {
 		exitCtExpression(assignment);
 	}
 
-
 	@Override
 	public void visitCtPackage(CtPackage ctPackage) {
 		// Should not get here.
 		cancelConversion(ctPackage);
 	}
-
 
 	@Override
 	public void visitCtPackageReference(CtPackageReference reference) {
@@ -891,12 +855,10 @@ public class OpenCLCodeGeneratorVisitor implements CtVisitor {
 		cancelConversion(reference);
 	}
 
-
 	@Override
 	public <T> void visitCtParameter(CtParameter<T> parameter) {
 		// Only to define functions
 	}
-
 
 	@Override
 	public <T> void visitCtParameterReference(CtParameterReference<T> reference) {
@@ -909,7 +871,6 @@ public class OpenCLCodeGeneratorVisitor implements CtVisitor {
 		cancelConversion(reference);
 	}
 
-
 	@Override
 	public <R> void visitCtReturn(CtReturn<R> returnStatement) {
 		enterCtStatement(returnStatement);
@@ -917,14 +878,12 @@ public class OpenCLCodeGeneratorVisitor implements CtVisitor {
 		scan(returnStatement.getReturnedExpression());
 	}
 
-
 	@Override
 	public <R> void visitCtStatementList(CtStatementList<R> statements) {
 		for (CtStatement s : statements.getStatements()) {
 			scan(s);
 		}
 	}
-
 
 	@Override
 	public <S> void visitCtSwitch(CtSwitch<S> switchStatement) {
@@ -938,25 +897,21 @@ public class OpenCLCodeGeneratorVisitor implements CtVisitor {
 		decTab().writeln().write("}");
 	}
 
-
 	@Override
 	public void visitCtSynchronized(CtSynchronized synchro) {
 		// TODO: Barrier?
 		cancelConversion(synchro);
 	}
 
-
 	@Override
 	public void visitCtThrow(CtThrow throwStatement) {
 		cancelConversion(throwStatement);
 	}
 
-
 	@Override
 	public void visitCtTry(CtTry tryBlock) {
 		cancelConversion(tryBlock);
 	}
-
 
 	@Override
 	public void visitCtTypeParameter(CtTypeParameter typeParameter) {
@@ -964,13 +919,11 @@ public class OpenCLCodeGeneratorVisitor implements CtVisitor {
 		cancelConversion(typeParameter);
 	}
 
-
 	@Override
 	public void visitCtTypeParameterReference(CtTypeParameterReference ref) {
 		// TODO: Some Generalization?
 		cancelConversion(ref);
 	}
-
 
 	@Override
 	public <T> void visitCtTypeReference(CtTypeReference<T> reference) {
@@ -986,7 +939,6 @@ public class OpenCLCodeGeneratorVisitor implements CtVisitor {
 		}
 	}
 
-
 	@Override
 	public <T> void visitCtUnaryOperator(CtUnaryOperator<T> operator) {
 		enterCtStatement(operator);
@@ -999,7 +951,6 @@ public class OpenCLCodeGeneratorVisitor implements CtVisitor {
 		exitCtExpression(operator);
 	}
 
-
 	public <T> boolean inScope(CtVariableAccess<T> variableAccess) {
 		String var = variableAccess.getVariable().getSimpleName();
 		for (String v : input_vars) {
@@ -1007,11 +958,12 @@ public class OpenCLCodeGeneratorVisitor implements CtVisitor {
 				return true;
 			}
 		}
-		CtElement d =  variableAccess.getVariable().getDeclaration();
-		if (d.hasParent(root)) return true;
+		CtElement d = variableAccess.getVariable().getDeclaration();
+		if (d.hasParent(root))
+			return true;
 		return false;
 	}
-	
+
 	@Override
 	public <T> void visitCtVariableAccess(CtVariableAccess<T> variableAccess) {
 		if (inScope(variableAccess)) {
@@ -1022,7 +974,6 @@ public class OpenCLCodeGeneratorVisitor implements CtVisitor {
 			cancelConversion(variableAccess);
 		}
 	}
-
 
 	@Override
 	public void visitCtWhile(CtWhile whileLoop) {
@@ -1041,5 +992,4 @@ public class OpenCLCodeGeneratorVisitor implements CtVisitor {
 		}
 	}
 
-	
 }

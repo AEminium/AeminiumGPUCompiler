@@ -4,24 +4,30 @@ import java.util.HashMap;
 
 public class MathConverter {
 	private static String SEP = "#";
-	
-	private static HashMap<String,MathFunction> functions = new HashMap<String,MathFunction>();
-	private static HashMap<String,String> constants = new HashMap<String,String>();
-	
+
+	private static HashMap<String, MathFunction> functions = new HashMap<String, MathFunction>();
+	private static HashMap<String, String> constants = new HashMap<String, String>();
+
 	private static MathFunction sameFunction(String name, CLType t) {
-		return new MathFunction("java.lang.Math", name, name, t, new CLType[] {t});
+		return new MathFunction("java.lang.Math", name, name, t,
+				new CLType[] { t });
 	}
+
 	private static MathFunction sameFunction2P(String name, CLType t) {
-		return new MathFunction("java.lang.Math", name, name, t, new CLType[] {t,t});
+		return new MathFunction("java.lang.Math", name, name, t, new CLType[] {
+				t, t });
 	}
-	private static MathFunction aliasFunction(String name, String namecl, CLType t) {
-		return new MathFunction("java.lang.Math", name, namecl, t, new CLType[] {t});
+
+	private static MathFunction aliasFunction(String name, String namecl,
+			CLType t) {
+		return new MathFunction("java.lang.Math", name, namecl, t,
+				new CLType[] { t });
 	}
-	
+
 	static {
 		constants.put("java.lang.Math#PI", new Double(Math.PI).toString()); // M_PI_F
 		constants.put("java.lang.Math#E", new Double(Math.E).toString()); // M_E_F
-		
+
 		register(sameFunction("acos", CLType.FLOAT_OR_DOUBLE));
 		register(sameFunction("asin", CLType.FLOAT_OR_DOUBLE));
 		register(sameFunction("atan", CLType.FLOAT_OR_DOUBLE));
@@ -52,27 +58,28 @@ public class MathConverter {
 		register(aliasFunction("toDegrees", "degrees", CLType.FLOAT_OR_DOUBLE));
 		register(aliasFunction("toRadians", "radians", CLType.FLOAT_OR_DOUBLE));
 	}
-	
+
 	private static void register(MathFunction f) {
 		functions.put(makeKey(f), f);
 	}
-	
+
 	private static String makeKey(MathFunction f) {
 		return f.getQualifiedClass() + SEP + f.getMethodName();
 	}
-	
+
 	private static String makeKey(String qualifiedName, String method) {
 		return qualifiedName + "#" + method;
 	}
-	
+
 	public static boolean hasMethod(String qualifiedName, String method) {
 		return functions.containsKey(makeKey(qualifiedName, method));
 	}
-	
-	public static MathFunction getMathFunction(String qualifiedName, String method) {
+
+	public static MathFunction getMathFunction(String qualifiedName,
+			String method) {
 		return functions.get(makeKey(qualifiedName, method));
 	}
-	
+
 	public static boolean hasConstant(String qualified) {
 		return constants.containsKey(qualified);
 	}
@@ -80,5 +87,5 @@ public class MathConverter {
 	public static String getConstant(String qualified) {
 		return constants.get(qualified);
 	}
-	
+
 }

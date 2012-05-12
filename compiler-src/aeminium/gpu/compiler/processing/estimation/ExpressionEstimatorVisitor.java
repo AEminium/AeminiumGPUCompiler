@@ -66,9 +66,9 @@ public class ExpressionEstimatorVisitor implements CtVisitor {
 
 	Estimation estimation = new EstimationStore();
 	int multiplier = 1;
-	
+
 	public static int staticLoopSize = 10;
-	
+
 	/* General Scan Functions */
 	public ExpressionEstimatorVisitor scan(CtElement e) {
 		if (e != null) {
@@ -76,31 +76,36 @@ public class ExpressionEstimatorVisitor implements CtVisitor {
 		}
 		return this;
 	}
-	
+
 	public ExpressionEstimatorVisitor scan(CtReference ref) {
 		if (ref != null) {
 			ref.accept(this);
 		}
 		return this;
 	}
-	
+
 	@Override
 	public <A extends Annotation> void visitCtAnnotation(
-			CtAnnotation<A> annotation) {}
+			CtAnnotation<A> annotation) {
+	}
 
 	@Override
 	public <T> void visitCtCodeSnippetExpression(
-			CtCodeSnippetExpression<T> expression) {}
+			CtCodeSnippetExpression<T> expression) {
+	}
 
 	@Override
-	public void visitCtCodeSnippetStatement(CtCodeSnippetStatement statement) {}
+	public void visitCtCodeSnippetStatement(CtCodeSnippetStatement statement) {
+	}
 
 	@Override
 	public <A extends Annotation> void visitCtAnnotationType(
-			CtAnnotationType<A> annotationType) {}
+			CtAnnotationType<A> annotationType) {
+	}
 
 	@Override
-	public void visitCtAnonymousExecutable(CtAnonymousExecutable anonymousExec) {}
+	public void visitCtAnonymousExecutable(CtAnonymousExecutable anonymousExec) {
+	}
 
 	@Override
 	public <T, E extends CtExpression<?>> void visitCtArrayAccess(
@@ -115,7 +120,8 @@ public class ExpressionEstimatorVisitor implements CtVisitor {
 	}
 
 	@Override
-	public <T> void visitCtAssert(CtAssert<T> asserted) {}
+	public <T> void visitCtAssert(CtAssert<T> asserted) {
+	}
 
 	@Override
 	public <T, A extends T> void visitCtAssignment(
@@ -127,9 +133,10 @@ public class ExpressionEstimatorVisitor implements CtVisitor {
 	@Override
 	public <T> void visitCtBinaryOperator(CtBinaryOperator<T> operator) {
 		scan(operator.getLeftHandOperand());
-		estimation.addEstimation(operator.getKind().name().toLowerCase(), multiplier);
+		estimation.addEstimation(operator.getKind().name().toLowerCase(),
+				multiplier);
 		scan(operator.getRightHandOperand());
-		
+
 	}
 
 	@Override
@@ -137,11 +144,12 @@ public class ExpressionEstimatorVisitor implements CtVisitor {
 		for (CtStatement e : block.getStatements()) {
 			scan(e);
 		}
-		
+
 	}
 
 	@Override
-	public void visitCtBreak(CtBreak breakStatement) {}
+	public void visitCtBreak(CtBreak breakStatement) {
+	}
 
 	@Override
 	public <S> void visitCtCase(CtCase<S> caseStatement) {
@@ -154,10 +162,12 @@ public class ExpressionEstimatorVisitor implements CtVisitor {
 	}
 
 	@Override
-	public void visitCtCatch(CtCatch catchBlock) {}
+	public void visitCtCatch(CtCatch catchBlock) {
+	}
 
 	@Override
-	public <T> void visitCtClass(CtClass<T> ctClass) {}
+	public <T> void visitCtClass(CtClass<T> ctClass) {
+	}
 
 	@Override
 	public <T> void visitCtConditional(CtConditional<T> conditional) {
@@ -167,10 +177,12 @@ public class ExpressionEstimatorVisitor implements CtVisitor {
 	}
 
 	@Override
-	public <T> void visitCtConstructor(CtConstructor<T> c) {}
+	public <T> void visitCtConstructor(CtConstructor<T> c) {
+	}
 
 	@Override
-	public void visitCtContinue(CtContinue continueStatement) {}
+	public void visitCtContinue(CtContinue continueStatement) {
+	}
 
 	@Override
 	public void visitCtDo(CtDo doLoop) {
@@ -182,28 +194,32 @@ public class ExpressionEstimatorVisitor implements CtVisitor {
 	}
 
 	@Override
-	public <T extends Enum<?>> void visitCtEnum(CtEnum<T> ctEnum) {}
+	public <T extends Enum<?>> void visitCtEnum(CtEnum<T> ctEnum) {
+	}
 
 	@Override
 	public <T> void visitCtExecutableReference(
-			CtExecutableReference<T> reference) {}
+			CtExecutableReference<T> reference) {
+	}
 
 	@Override
-	public <T> void visitCtField(CtField<T> f) {}
+	public <T> void visitCtField(CtField<T> f) {
+	}
 
 	@SuppressWarnings("rawtypes")
 	@Override
 	public <T> void visitCtFieldAccess(CtFieldAccess<T> fieldAccess) {
 		CtFieldReference var = fieldAccess.getVariable();
 		if (MathConverter.hasConstant(var.getQualifiedName())) {
-			estimation.addEstimation("fieldaccess",multiplier);
+			estimation.addEstimation("fieldaccess", multiplier);
 		} else if (var.isFinal()) {
 			scan(var.getDeclaration().getDefaultExpression());
 		}
 	}
 
 	@Override
-	public <T> void visitCtFieldReference(CtFieldReference<T> reference) {}
+	public <T> void visitCtFieldReference(CtFieldReference<T> reference) {
+	}
 
 	@Override
 	public void visitCtFor(CtFor forLoop) {
@@ -216,10 +232,10 @@ public class ExpressionEstimatorVisitor implements CtVisitor {
 				scan(st.get(i));
 			}
 		}
-		
+
 		int oldMultiplier = multiplier;
 		multiplier *= staticLoopSize;
-		
+
 		// TODO: Introspect for loop expression
 		scan(forLoop.getExpression());
 		for (CtStatement s : forLoop.getForUpdate()) {
@@ -234,7 +250,8 @@ public class ExpressionEstimatorVisitor implements CtVisitor {
 	}
 
 	@Override
-	public void visitCtForEach(CtForEach foreach) {}
+	public void visitCtForEach(CtForEach foreach) {
+	}
 
 	@Override
 	public void visitCtIf(CtIf ifElement) {
@@ -246,38 +263,44 @@ public class ExpressionEstimatorVisitor implements CtVisitor {
 	}
 
 	@Override
-	public <T> void visitCtInterface(CtInterface<T> intrface) {}
+	public <T> void visitCtInterface(CtInterface<T> intrface) {
+	}
 
 	@SuppressWarnings("rawtypes")
 	@Override
 	public <T> void visitCtInvocation(CtInvocation<T> invocation) {
 		CtExecutableReference<T> ex = invocation.getExecutable();
-		
+
 		String qualifiedName = ex.getDeclaringType().getQualifiedName();
 		String methodname = ex.getSimpleName();
-		
+
 		if (MathConverter.hasMethod(qualifiedName, methodname)) {
-			// MathFunction f = MathConverter.getMathFunction(qualifiedName, methodname);
-			
+			// MathFunction f = MathConverter.getMathFunction(qualifiedName,
+			// methodname);
+
 			estimation.addEstimation(methodname, multiplier);
-			for (CtExpression o: invocation.getArguments()) {
+			for (CtExpression o : invocation.getArguments()) {
 				scan(o);
 			}
 		}
 	}
 
 	@Override
-	public <T> void visitCtLiteral(CtLiteral<T> literal) {}
+	public <T> void visitCtLiteral(CtLiteral<T> literal) {
+	}
 
 	@Override
-	public <T> void visitCtLocalVariable(CtLocalVariable<T> localVariable) {}
+	public <T> void visitCtLocalVariable(CtLocalVariable<T> localVariable) {
+	}
 
 	@Override
 	public <T> void visitCtLocalVariableReference(
-			CtLocalVariableReference<T> reference) {}
+			CtLocalVariableReference<T> reference) {
+	}
 
 	@Override
-	public <T> void visitCtMethod(CtMethod<T> m) {}
+	public <T> void visitCtMethod(CtMethod<T> m) {
+	}
 
 	@Override
 	public <T> void visitCtNewArray(CtNewArray<T> newArray) {
@@ -285,7 +308,8 @@ public class ExpressionEstimatorVisitor implements CtVisitor {
 	}
 
 	@Override
-	public <T> void visitCtNewClass(CtNewClass<T> newClass) {}
+	public <T> void visitCtNewClass(CtNewClass<T> newClass) {
+	}
 
 	@Override
 	public <T, A extends T> void visitCtOperatorAssignement(
@@ -295,16 +319,20 @@ public class ExpressionEstimatorVisitor implements CtVisitor {
 	}
 
 	@Override
-	public void visitCtPackage(CtPackage ctPackage) {}
+	public void visitCtPackage(CtPackage ctPackage) {
+	}
 
 	@Override
-	public void visitCtPackageReference(CtPackageReference reference) {}
+	public void visitCtPackageReference(CtPackageReference reference) {
+	}
 
 	@Override
-	public <T> void visitCtParameter(CtParameter<T> parameter) {}
+	public <T> void visitCtParameter(CtParameter<T> parameter) {
+	}
 
 	@Override
-	public <T> void visitCtParameterReference(CtParameterReference<T> reference) {}
+	public <T> void visitCtParameterReference(CtParameterReference<T> reference) {
+	}
 
 	@Override
 	public <R> void visitCtReturn(CtReturn<R> returnStatement) {
@@ -327,28 +355,35 @@ public class ExpressionEstimatorVisitor implements CtVisitor {
 	}
 
 	@Override
-	public void visitCtSynchronized(CtSynchronized synchro) {}
+	public void visitCtSynchronized(CtSynchronized synchro) {
+	}
 
 	@Override
-	public void visitCtThrow(CtThrow throwStatement) {}
+	public void visitCtThrow(CtThrow throwStatement) {
+	}
 
 	@Override
-	public void visitCtTry(CtTry tryBlock) {}
+	public void visitCtTry(CtTry tryBlock) {
+	}
 
 	@Override
-	public void visitCtTypeParameter(CtTypeParameter typeParameter) {}
+	public void visitCtTypeParameter(CtTypeParameter typeParameter) {
+	}
 
 	@Override
-	public void visitCtTypeParameterReference(CtTypeParameterReference ref) {}
+	public void visitCtTypeParameterReference(CtTypeParameterReference ref) {
+	}
 
 	@Override
-	public <T> void visitCtTypeReference(CtTypeReference<T> reference) {}
+	public <T> void visitCtTypeReference(CtTypeReference<T> reference) {
+	}
 
 	@Override
 	public <T> void visitCtUnaryOperator(CtUnaryOperator<T> operator) {
 		scan(operator.getOperand());
-		estimation.addEstimation(operator.getKind().name().toLowerCase(), multiplier);
-		
+		estimation.addEstimation(operator.getKind().name().toLowerCase(),
+				multiplier);
+
 	}
 
 	@Override

@@ -15,12 +15,12 @@ public class SimpleMap {
 			public Float map(Double input_with_other_name) {
 				return (float) Math.sin(input_with_other_name);
 			}
-			
+
 		});
-		
+
 		for (int i = 0; i < out.size(); i++) {
 			System.out.println(i + ": " + out.get(i));
 		}
-		
+
 	}
 }

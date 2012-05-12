@@ -6,6 +6,8 @@ import aeminium.gpu.utils.Pair;
 
 public interface Estimation {
 	public void addEstimation(String expr);
+
 	public void addEstimation(String expr, int times);
+
 	public Iterator<Pair<Integer, String>> getEstimations();
 }

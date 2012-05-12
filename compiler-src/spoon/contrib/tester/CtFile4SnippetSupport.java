@@ -15,99 +15,96 @@ import spoon.support.builder.CtFolder;
  * @author Lionel Seinturier <Lionel.Seinturier@lifl.fr>
  */
 public abstract class CtFile4SnippetSupport implements CtFile {
-    
-    private String content;
-    private String className;
-    private File file;
 
-    public CtFile4SnippetSupport(String snippet) {
-        this(null, snippet);
-    }
+	private String content;
+	private String className;
+	private File file;
 
-    public CtFile4SnippetSupport(String className, String snippet) {
-        super();
+	public CtFile4SnippetSupport(String snippet) {
+		this(null, snippet);
+	}
 
-        if (snippet == null) {
-            throw new IllegalArgumentException("snipplet is null");
-        }
+	public CtFile4SnippetSupport(String className, String snippet) {
+		super();
 
-        /*
-         * Set className.
-         */
-        if (className == null) {
-            try {
-                file = File.createTempFile("Spoon", ".java");
-                file.deleteOnExit();
-            }
-            catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-            this.className = file.getName();
-            this.className =    // remove .java
-                this.className.substring(0,this.className.length()-5);
-        }
-        else {
-            String s = className.replace('.','/')+".java";
-            file = new File(s);
-            this.className = className;
-        }
-        content = makeContent(snippet);
+		if (snippet == null) {
+			throw new IllegalArgumentException("snipplet is null");
+		}
 
-        /*
-         * Dump the content to the temporary file when needed.
-         */
-        if (className == null) {
-            try {
-                FileWriter fw = new FileWriter(file);
-                fw.write(content);
-                fw.close();
-            }
-            catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }
-    }
+		/*
+		 * Set className.
+		 */
+		if (className == null) {
+			try {
+				file = File.createTempFile("Spoon", ".java");
+				file.deleteOnExit();
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
+			this.className = file.getName();
+			this.className = // remove .java
+			this.className.substring(0, this.className.length() - 5);
+		} else {
+			String s = className.replace('.', '/') + ".java";
+			file = new File(s);
+			this.className = className;
+		}
+		content = makeContent(snippet);
 
-    public InputStream getContent() {
-        return new ByteArrayInputStream(content.getBytes());
-    }
+		/*
+		 * Dump the content to the temporary file when needed.
+		 */
+		if (className == null) {
+			try {
+				FileWriter fw = new FileWriter(file);
+				fw.write(content);
+				fw.close();
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
+		}
+	}
 
-    public boolean isJava() {
-        return true;
-    }
+	public InputStream getContent() {
+		return new ByteArrayInputStream(content.getBytes());
+	}
 
-    /*
+	public boolean isJava() {
+		return true;
+	}
+
+	/*
      */
-    public String getPath() {
-        return file.getPath();
-    }
-    
-    public String getName() {
-        String fname = className.replace('.', '/');
-        fname = fname + ".java";
-        return fname;
-    }
+	public String getPath() {
+		return file.getPath();
+	}
 
-    public String getClassName() {
-        return className.substring(className.lastIndexOf('.')+1);
-    }
+	public String getName() {
+		String fname = className.replace('.', '/');
+		fname = fname + ".java";
+		return fname;
+	}
 
-    public String getFullClassName() {
-        return className;
-    }
+	public String getClassName() {
+		return className.substring(className.lastIndexOf('.') + 1);
+	}
 
-    public CtFolder getParent() {
-        return null;
-    }
+	public String getFullClassName() {
+		return className;
+	}
 
-    public boolean isFile() {
-        return true;
-    }
+	public CtFolder getParent() {
+		return null;
+	}
 
-    protected abstract String makeContent(String snippet);
+	public boolean isFile() {
+		return true;
+	}
 
-    @Override
-    public String toString() {
-        return content;
-    }
+	protected abstract String makeContent(String snippet);
+
+	@Override
+	public String toString() {
+		return content;
+	}
 }

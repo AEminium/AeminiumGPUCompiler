@@ -5,10 +5,11 @@ import java.util.Iterator;
 
 import aeminium.gpu.utils.Pair;
 
-public class EstimationStore implements Estimation, Iterable<Pair<Integer, String>> {
+public class EstimationStore implements Estimation,
+		Iterable<Pair<Integer, String>> {
 
 	HashMap<String, Integer> store = new HashMap<String, Integer>();
-	
+
 	@Override
 	public void addEstimation(String expr) {
 		addEstimation(expr, 1);
@@ -20,7 +21,7 @@ public class EstimationStore implements Estimation, Iterable<Pair<Integer, Strin
 			expr = "plus";
 		}
 		if (store.containsKey(expr)) {
-			times+=store.get(expr);
+			times += store.get(expr);
 		}
 		store.put(expr, times);
 	}
@@ -29,7 +30,7 @@ public class EstimationStore implements Estimation, Iterable<Pair<Integer, Strin
 	public Iterator<Pair<Integer, String>> getEstimations() {
 		return iterator();
 	}
-	
+
 	public String toString() {
 		StringBuilder b = new StringBuilder();
 		int i = 0;
@@ -65,7 +66,7 @@ public class EstimationStore implements Estimation, Iterable<Pair<Integer, Strin
 			public void remove() {
 				storeIter.remove();
 			}
-			
+
 		};
 	}
 
