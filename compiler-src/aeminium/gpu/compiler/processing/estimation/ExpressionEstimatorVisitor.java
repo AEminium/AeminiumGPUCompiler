@@ -1,7 +1,9 @@
 package aeminium.gpu.compiler.processing.estimation;
 
 import java.lang.annotation.Annotation;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import spoon.reflect.code.CtArrayAccess;
 import spoon.reflect.code.CtAssert;
@@ -64,10 +66,87 @@ import aeminium.gpu.compiler.processing.opencl.MathConverter;
 
 public class ExpressionEstimatorVisitor implements CtVisitor {
 
+	public static int staticLoopSize = 10;
 	Estimation estimation = new EstimationStore();
 	int multiplier = 1;
-
-	public static int staticLoopSize = 10;
+	
+	int depth=0;
+	int[] features = new int[] {
+			0, // 0 - outter access (1st, 2nd and 3rd level)
+			0,
+			0,
+			0, // 3 - inner access (1st, 2nd and 3rd level)
+			0,
+			0,
+			0, // 6 - constant access (1st, 2nd and 3rd level)
+			0,
+			0,
+			0, // 9 - outter write (1st, 2nd and 3rd level)
+			0,
+			0,
+			0, // 12 - inner write (1st, 2nd and 3rd level)
+			0,
+			0,
+			0, // 15 - basic (1st, 2nd and 3rd level)
+			0,
+			0,
+			0, // 18 - sin, cos, arc, tan, etc... (1st, 2nd and 3rd level)
+			0,
+			0,
+			0, // 21 - pow, log, ... (1st, 2nd and 3rd level)
+			0,
+			0,
+			0, // 24 - min, ax, ... (1st, 2nd and 3rd level)
+			0,
+			0
+	};
+	static Map<String, Integer> funs = new HashMap<String, Integer>();
+	static {
+		int basic = 15;
+		int sin = 18;
+		int pow = 21;
+		int min = 24;
+		funs.put("mul", basic);
+		funs.put("plus", basic);
+		funs.put("div", basic);
+		funs.put("eq", basic);
+		funs.put("le", basic);
+		funs.put("mod", basic);
+		funs.put("minus", basic);
+		funs.put("postinc", basic);
+		funs.put("sin", sin);
+		funs.put("asin", sin);
+		funs.put("cos", sin);
+		funs.put("acos", sin);
+		funs.put("tan", sin);
+		funs.put("atan", sin);
+		funs.put("pow", pow);
+		funs.put("log", pow);
+		funs.put("ln", pow);
+		funs.put("sqrt", pow);
+		funs.put("min", min);
+		funs.put("max", min);
+	}
+	
+	private void incFeature(int n) {
+		features[n + Math.min(depth, 2)]++;
+	}
+	
+	private void incVariable(String var) {
+		incVariable(var, 0);
+	}
+		
+	private void incVariable(String var, int rw) {
+		System.out.println("feat: var: " + var  + " rw: " + rw);
+	}
+	
+	private void incFun(String code) {
+		if (!funs.containsKey(code)) {
+			System.out.println("feat: op: " + code );
+		} else {
+			incFeature(funs.get(code));
+		}
+	}
 
 	/* General Scan Functions */
 	public ExpressionEstimatorVisitor scan(CtElement e) {
@@ -110,6 +189,8 @@ public class ExpressionEstimatorVisitor implements CtVisitor {
 	@Override
 	public <T, E extends CtExpression<?>> void visitCtArrayAccess(
 			CtArrayAccess<T, E> arrayAccess) {
+		incVariable(arrayAccess.getIndexExpression().toString());
+		incFeature(0);
 		estimation.addEstimation("arrayaccess", multiplier);
 		scan(arrayAccess.getIndexExpression());
 	}
@@ -126,6 +207,7 @@ public class ExpressionEstimatorVisitor implements CtVisitor {
 	@Override
 	public <T, A extends T> void visitCtAssignment(
 			CtAssignment<T, A> assignement) {
+		incVariable(assignement.getAssigned().toString(), 1);
 		scan(assignement.getAssigned());
 		scan(assignement.getAssignment());
 	}
@@ -133,11 +215,14 @@ public class ExpressionEstimatorVisitor implements CtVisitor {
 	@Override
 	public <T> void visitCtBinaryOperator(CtBinaryOperator<T> operator) {
 		scan(operator.getLeftHandOperand());
+		incFun(operator.getKind().name().toLowerCase());
 		estimation.addEstimation(operator.getKind().name().toLowerCase(),
 				multiplier);
 		scan(operator.getRightHandOperand());
 
 	}
+
+
 
 	@Override
 	public <R> void visitCtBlock(CtBlock<R> block) {
@@ -186,11 +271,13 @@ public class ExpressionEstimatorVisitor implements CtVisitor {
 
 	@Override
 	public void visitCtDo(CtDo doLoop) {
+		depth++;
 		int oldMultiplier = multiplier;
 		multiplier *= staticLoopSize;
 		scan(doLoop.getBody());
 		scan(doLoop.getLoopingExpression());
 		multiplier = oldMultiplier;
+		depth--;
 	}
 
 	@Override
@@ -210,8 +297,10 @@ public class ExpressionEstimatorVisitor implements CtVisitor {
 	@Override
 	public <T> void visitCtFieldAccess(CtFieldAccess<T> fieldAccess) {
 		CtFieldReference var = fieldAccess.getVariable();
+		
 		if (MathConverter.hasConstant(var.getQualifiedName())) {
 			estimation.addEstimation("fieldaccess", multiplier);
+			incFeature(6);
 		} else if (var.isFinal()) {
 			scan(var.getDeclaration().getDefaultExpression());
 		}
@@ -235,6 +324,7 @@ public class ExpressionEstimatorVisitor implements CtVisitor {
 
 		int oldMultiplier = multiplier;
 		multiplier *= staticLoopSize;
+		depth++;
 
 		// TODO: Introspect for loop expression
 		scan(forLoop.getExpression());
@@ -247,6 +337,7 @@ public class ExpressionEstimatorVisitor implements CtVisitor {
 			scan(forLoop.getBody());
 		}
 		multiplier = oldMultiplier;
+		depth--;
 	}
 
 	@Override
@@ -278,6 +369,7 @@ public class ExpressionEstimatorVisitor implements CtVisitor {
 			// MathFunction f = MathConverter.getMathFunction(qualifiedName,
 			// methodname);
 
+			incFun(methodname);
 			estimation.addEstimation(methodname, multiplier);
 			for (CtExpression o : invocation.getArguments()) {
 				scan(o);
@@ -314,6 +406,9 @@ public class ExpressionEstimatorVisitor implements CtVisitor {
 	@Override
 	public <T, A extends T> void visitCtOperatorAssignement(
 			CtOperatorAssignment<T, A> assignment) {
+		incFun(assignment.getKind().toString().toLowerCase());
+		incVariable(assignment.getAssigned().toString(), 1);
+		estimation.addEstimation(assignment.getKind().toString().toLowerCase(), multiplier);
 		scan(assignment.getAssigned());
 		scan(assignment.getAssignment());
 	}
@@ -381,6 +476,7 @@ public class ExpressionEstimatorVisitor implements CtVisitor {
 	@Override
 	public <T> void visitCtUnaryOperator(CtUnaryOperator<T> operator) {
 		scan(operator.getOperand());
+		incFun(operator.getKind().name().toLowerCase());
 		estimation.addEstimation(operator.getKind().name().toLowerCase(),
 				multiplier);
 
@@ -388,16 +484,19 @@ public class ExpressionEstimatorVisitor implements CtVisitor {
 
 	@Override
 	public <T> void visitCtVariableAccess(CtVariableAccess<T> variableAccess) {
+		incVariable(variableAccess.getVariable().toString());
 		scan(variableAccess.getVariable());
 	}
 
 	@Override
 	public void visitCtWhile(CtWhile whileLoop) {
+		depth++;
 		int oldMultiplier = multiplier;
 		multiplier *= staticLoopSize;
 		scan(whileLoop.getLoopingExpression());
 		scan(whileLoop.getBody());
 		multiplier = oldMultiplier;
+		depth--;
 	}
 
 	public String getExpressionString() {
