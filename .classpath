@@ -7,6 +7,5 @@
 	<classpathentry kind="lib" path="lib/junit-4.9b2.jar"/>
 	<classpathentry kind="lib" path="lib/AeminiumGPU.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/AeminiumGPU"/>
-	<classpathentry kind="lib" path="lib/javacl-1.0.0-RC1-shaded.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -4,7 +4,7 @@
 	<property name="src.dir" value="src" />
 	<property name="build.dir" value="bin" />
 	<property name="lib.dir" value="lib" />
-	<property name="main-class" value="code.PiCalc" />
+	<property name="main-class" value="code.SimpleMap" />
 
 
 	<property name="spooned.dir" value="spooned" />
