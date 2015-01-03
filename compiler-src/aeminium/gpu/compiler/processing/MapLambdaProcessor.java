@@ -45,12 +45,15 @@ public class MapLambdaProcessor<T> extends AbstractLambdaProcessor<T> {
 			/* Pre-compilation to speed up execution */
 			preCompile(target, clString, id);
 
+			/* OutputType */
+			String outputType = target.getType().getQualifiedName();
+			
 			/* Cost estimation */
 			ExpressionEstimatorVisitor estimator = new ExpressionEstimatorVisitor();
 			body.accept(estimator);
-
+			
 			/* Introduction of extra methods */
-			Template t = new MapLambdaTemplate(clString, id, params,
+			Template t = new MapLambdaTemplate(clString, id, params, outputType,
 					estimator.getExpressionString());
 			Substitution.insertAllMethods(target.getParent(CtClass.class), t);
 		}
