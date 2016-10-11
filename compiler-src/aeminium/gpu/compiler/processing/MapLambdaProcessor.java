@@ -5,11 +5,11 @@ import spoon.reflect.declaration.CtClass;
 import spoon.reflect.declaration.CtMethod;
 import spoon.template.Substitution;
 import spoon.template.Template;
+import aeminium.gpu.backends.gpu.generators.MapCodeGen;
 import aeminium.gpu.compiler.processing.estimation.ExpressionEstimatorVisitor;
 import aeminium.gpu.compiler.template.MapLambdaTemplate;
 import aeminium.gpu.devices.DefaultDeviceFactory;
 import aeminium.gpu.devices.GPUDevice;
-import aeminium.gpu.operations.generator.MapCodeGen;
 
 public class MapLambdaProcessor<T> extends AbstractLambdaProcessor<T> {
 

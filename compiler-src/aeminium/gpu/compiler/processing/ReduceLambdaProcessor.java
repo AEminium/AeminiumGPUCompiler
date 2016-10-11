@@ -5,11 +5,11 @@ import spoon.reflect.declaration.CtClass;
 import spoon.reflect.declaration.CtMethod;
 import spoon.template.Substitution;
 import spoon.template.Template;
+import aeminium.gpu.backends.gpu.generators.ReduceCodeGen;
 import aeminium.gpu.compiler.processing.estimation.ExpressionEstimatorVisitor;
 import aeminium.gpu.compiler.template.ReduceLambdaTemplate;
 import aeminium.gpu.devices.DefaultDeviceFactory;
 import aeminium.gpu.devices.GPUDevice;
-import aeminium.gpu.operations.generator.ReduceCodeGen;
 
 public class ReduceLambdaProcessor<T> extends AbstractLambdaProcessor<T> {
 
