@@ -21,17 +21,12 @@ public class ReduceLambdaProcessor<T> extends AbstractLambdaProcessor<T> {
 	@Override
 	public void process(CtClass<T> target) {
 		if (target.getSuperclass() != null) {
-			if (target.getSuperclass().toString()
-					.equals("aeminium.gpu.operations.functions.LambdaReducer")
-					|| target
-							.getSuperclass()
-							.toString()
-							.equals("aeminium.gpu.operations.functions.LambdaReducerWithSeed")) {
+			if (target.getSuperclass().toString().equals("aeminium.gpu.operations.functions.LambdaReducer") || target
+					.getSuperclass().toString().equals("aeminium.gpu.operations.functions.LambdaReducerWithSeed")) {
 				for (CtMethod<?> m : target.getMethods()) {
 					if (m.getSimpleName().equals("combine")) {
 						// Extract useful info
-						inputType = m.getParameters().get(0).getType()
-								.getQualifiedName();
+						inputType = m.getParameters().get(0).getType().getQualifiedName();
 						outputType = m.getType().getQualifiedName();
 						parseParameters(m);
 
@@ -61,25 +56,26 @@ public class ReduceLambdaProcessor<T> extends AbstractLambdaProcessor<T> {
 
 		if (canSubstitute && clCode != null && seedCode != null) {
 			String id = getOpId("reduce", target);
-			preCompile(target, clCode, seedCode, id);
+			//preCompile(target, clCode, seedCode, id);
 
-			Template t = new ReduceLambdaTemplate(clCode, seedCode, id, params,
-					cost);
+			Template t = new ReduceLambdaTemplate(clCode, seedCode, id, params, cost);
 			Substitution.insertAllMethods(target, t);
 		}
 	}
 
 	protected void preCompile(CtClass<?> target, String clString,
 			String seedString, String id) {
+		try {
+			ReduceCodeGen g = new ReduceCodeGen(inputType, outputType, clString,
+					seedString, params, id);
 
-		ReduceCodeGen g = new ReduceCodeGen(inputType, outputType, clString,
-				seedString, params, id);
-
-		GPUDevice gpu = (new DefaultDeviceFactory()).getDevice();
-		if (gpu != null) {
-			// This relies in JavaCL's builtin binary caching.
-			gpu.compile(g.getReduceKernelSource());
+			GPUDevice gpu = (new DefaultDeviceFactory()).getDevice();
+			if (gpu != null) {
+				// This relies in JavaCL's builtin binary caching.
+				gpu.compile(g.getReduceKernelSource());
+			}
+		} catch(Exception e){
+			System.out.println("Could not precompile function");
 		}
 	}
-
 }
