@@ -43,7 +43,7 @@ public class MapLambdaProcessor<T> extends AbstractLambdaProcessor<T> {
 			String id = getOpId("map", target);
 
 			/* Pre-compilation to speed up execution */
-			preCompile(target, clString, id);
+			//preCompile(target, clString, id);
 
 			/* OutputType */
 			String outputType = target.getType().getQualifiedName();
@@ -60,16 +60,20 @@ public class MapLambdaProcessor<T> extends AbstractLambdaProcessor<T> {
 	}
 
 	protected void preCompile(CtMethod<?> target, String clString, String id) {
-		String inputType = target.getParameters().get(0).getType()
-				.getQualifiedName();
-		String outputType = target.getType().getQualifiedName();
-		MapCodeGen g = new MapCodeGen(inputType, outputType, clString, params,
-				id);
-
-		GPUDevice gpu = (new DefaultDeviceFactory()).getDevice();
-		if (gpu != null) {
-			// This relies in JavaCL's builtin binary caching.
-			gpu.compile(g.getMapKernelSource());
+		try {
+			String inputType = target.getParameters().get(0).getType()
+					.getQualifiedName();
+			String outputType = target.getType().getQualifiedName();
+			MapCodeGen g = new MapCodeGen(inputType, outputType, clString, params,
+					id);
+	
+			GPUDevice gpu = (new DefaultDeviceFactory()).getDevice();
+			if (gpu != null) {
+				// This relies in JavaCL's builtin binary caching.
+				gpu.compile(g.getMapKernelSource());
+			}
+		} catch (Exception e) {
+			System.out.println("Could not precompile function");
 		}
 
 	}
