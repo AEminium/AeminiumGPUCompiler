@@ -8,7 +8,7 @@ import aeminium.gpu.operations.functions.LambdaReducerWithSeed;
 
 public class PiCalc {
 	public static void main(String[] args) {
-		int RESOLUTION = 100000;
+		int RESOLUTION = 10000000;
 		RandomList rl = new RandomList(RESOLUTION * 2, 12345);
 		PMatrix<Float> m = rl.groupBy(2);
 		PList<Float> pair = m.reduceLines(new LambdaReducer<Float>() {

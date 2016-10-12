@@ -40,7 +40,7 @@ public class SumOfDivisible {
 
 					@Override
 					public Long map(Integer input) {
-						return (input + 1) % 7 == 0 ? (long) input + 1 : 0L;
+						return (input + 1) % 7 == 0 ? ((long) input + 1) : 0L;
 					}
 
 				}).reduce(new LambdaReducerWithSeed<Long>() {
