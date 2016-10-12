@@ -17,7 +17,8 @@ public class ReduceLambdaProcessor<T> extends AbstractLambdaProcessor<T> {
 	private String inputType;
 	private String outputType;
 	private String cost;
-
+	private String features;
+	
 	@Override
 	public void process(CtClass<T> target) {
 		if (target.getSuperclass() != null) {
@@ -34,6 +35,7 @@ public class ReduceLambdaProcessor<T> extends AbstractLambdaProcessor<T> {
 						ExpressionEstimatorVisitor estimator = new ExpressionEstimatorVisitor();
 						m.getBody().accept(estimator);
 						cost = estimator.getExpressionString();
+						features = estimator.getFeaturesString();
 
 						clCode = checkMethodBody(m);
 					}
@@ -58,7 +60,7 @@ public class ReduceLambdaProcessor<T> extends AbstractLambdaProcessor<T> {
 			String id = getOpId("reduce", target);
 			//preCompile(target, clCode, seedCode, id);
 
-			Template t = new ReduceLambdaTemplate(clCode, seedCode, id, params, cost);
+			Template t = new ReduceLambdaTemplate(clCode, seedCode, id, params, cost, features);
 			Substitution.insertAllMethods(target, t);
 		}
 	}
