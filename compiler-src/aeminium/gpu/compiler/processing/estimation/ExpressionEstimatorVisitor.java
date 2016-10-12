@@ -1,10 +1,12 @@
 package aeminium.gpu.compiler.processing.estimation;
 
 import java.lang.annotation.Annotation;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import aeminium.gpu.compiler.processing.opencl.MathConverter;
 import spoon.reflect.code.CtArrayAccess;
 import spoon.reflect.code.CtAssert;
 import spoon.reflect.code.CtAssignment;
@@ -62,7 +64,6 @@ import spoon.reflect.reference.CtReference;
 import spoon.reflect.reference.CtTypeParameterReference;
 import spoon.reflect.reference.CtTypeReference;
 import spoon.reflect.visitor.CtVisitor;
-import aeminium.gpu.compiler.processing.opencl.MathConverter;
 
 public class ExpressionEstimatorVisitor implements CtVisitor {
 
@@ -126,6 +127,10 @@ public class ExpressionEstimatorVisitor implements CtVisitor {
 		funs.put("sqrt", pow);
 		funs.put("min", min);
 		funs.put("max", min);
+	}
+	
+	public String getFeaturesString() {
+		return Arrays.toString(features).replaceAll("\\[|\\]", "");
 	}
 	
 	private void incFeature(int n) {

@@ -54,7 +54,7 @@ public class MapLambdaProcessor<T> extends AbstractLambdaProcessor<T> {
 			
 			/* Introduction of extra methods */
 			Template t = new MapLambdaTemplate(clString, id, params, outputType,
-					estimator.getExpressionString());
+					estimator.getExpressionString(), estimator.getFeaturesString());
 			Substitution.insertAllMethods(target.getParent(CtClass.class), t);
 		}
 	}

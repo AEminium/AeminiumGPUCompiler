@@ -20,6 +20,9 @@ public class MapLambdaTemplate implements Template {
 	
 	@Parameter
 	String _est_;
+	
+	@Parameter
+	String _feat_;
 
 	public String getSource() {
 		return _code_;
@@ -41,13 +44,17 @@ public class MapLambdaTemplate implements Template {
 		return _est_;
 	}
 
+	public String getFeatures() {
+		return _feat_;
+	}
 
 	@Local
-	public MapLambdaTemplate(String code, String id, String[] pars, String ot, String est) {
+	public MapLambdaTemplate(String code, String id, String[] pars, String ot, String est, String features) {
 		_code_ = code;
 		_id_ = id;
 		_pars_ = pars;
 		_ot_ = ot;
 		_est_ = est;
+		_feat_ = features;
 	}
 }
