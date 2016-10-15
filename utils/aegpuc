@@ -4,13 +4,15 @@
 
 # Intermediate code is placed in "spooned" folder by default. Can be overridden with "-o new_folder" switch.
 
+GPUCPATH="$(dirname $0)/.."
 
-COMPILE_LIB="compiler-lib/spoon-core-1.4-jar-with-dependencies.jar"
-CLASS_LIB="lib/AeminiumGPU.jar:lib/javacl-1.0.0-RC1-shaded.jar"
-COMPILER_SRC="compiler/"
+COMPILE_LIB="$GPUCPATH/compiler-lib/spoon-core-1.4-jar-with-dependencies.jar"
+CLASS_LIB="$GPUCPATH/lib/AeminiumGPU.jar:$$GPUCPATH/lib/javacl-1.0.0-RC1-shaded.jar"
+COMPILER_SRC="$GPUCPATH/compiler/"
 EXTRA_LIB=""
+
 
 java -cp "$COMPILE_LIB:$CLASS_LIB:$COMPILER_SRC:$EXTRA_LIB" \
 	aeminium.gpu.compiler.launcher.AeminiumGPUCompilerLauncher \
 	 --compliance 6 -i $1
-javac -cp "$CLASS_LIB:$EXTRA_LIB" spooned/**/*.java -d bin
+javac -cp "$CLASS_LIB:$EXTRA_LIB" $GPUCPATH/spooned/**/*.java -d bin
