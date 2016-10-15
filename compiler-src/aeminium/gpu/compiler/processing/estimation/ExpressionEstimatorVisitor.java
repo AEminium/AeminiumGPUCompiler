@@ -112,6 +112,10 @@ public class ExpressionEstimatorVisitor implements CtVisitor {
 		funs.put("div", basic);
 		funs.put("eq", basic);
 		funs.put("le", basic);
+		funs.put("lt", basic);
+		funs.put("gt", basic);
+		funs.put("ge", basic);
+		funs.put("ne", basic);
 		funs.put("mod", basic);
 		funs.put("minus", basic);
 		funs.put("postinc", basic);
@@ -138,11 +142,29 @@ public class ExpressionEstimatorVisitor implements CtVisitor {
 	}
 	
 	private void incVariable(String var) {
-		incVariable(var, 0);
+		incVariable(var, false, false);
 	}
 		
-	private void incVariable(String var, int rw) {
-		System.out.println("feat: var: " + var  + " rw: " + rw);
+	private void incVariable(String var, boolean rw) {
+		incVariable(var, rw, false);
+	}
+		
+	private void incVariable(String var, boolean rw, boolean global) {
+		if (global) {
+			System.out.println("Global");
+			if (rw) {
+				incFeature(12);
+			} else {
+				incFeature(3);
+			}
+		} else {
+			if (rw) {
+				incFeature(9);
+			} else {
+				incFeature(0);
+			}	
+		}
+		
 	}
 	
 	private void incFun(String code) {
@@ -211,10 +233,21 @@ public class ExpressionEstimatorVisitor implements CtVisitor {
 
 	@Override
 	public <T, A extends T> void visitCtAssignment(
-			CtAssignment<T, A> assignement) {
-		incVariable(assignement.getAssigned().toString(), 1);
-		scan(assignement.getAssigned());
-		scan(assignement.getAssignment());
+			CtAssignment<T, A> assignment) {
+		
+		boolean recorded = false;
+		if (assignment.getAssigned() instanceof CtVariableAccess) {
+			CtVariableAccess<T> acc = (CtVariableAccess<T>) assignment.getAssigned();
+			if (acc.getVariable().getDeclaration() instanceof CtParameter) {
+				incVariable(assignment.getAssigned().toString(), true, true);
+				recorded = true;
+			}
+		}
+		if (!recorded)
+			incVariable(assignment.getAssigned().toString(), true);
+		
+		scan(assignment.getAssigned());
+		scan(assignment.getAssignment());
 	}
 
 	@Override
@@ -412,8 +445,20 @@ public class ExpressionEstimatorVisitor implements CtVisitor {
 	public <T, A extends T> void visitCtOperatorAssignement(
 			CtOperatorAssignment<T, A> assignment) {
 		incFun(assignment.getKind().toString().toLowerCase());
-		incVariable(assignment.getAssigned().toString(), 1);
 		estimation.addEstimation(assignment.getKind().toString().toLowerCase(), multiplier);
+		
+		boolean recorded = false;
+		if (assignment.getAssigned() instanceof CtVariableAccess) {
+			CtVariableAccess<T> acc = (CtVariableAccess<T>) assignment.getAssigned();
+			if (acc.getVariable().getDeclaration() instanceof CtParameter) {
+				incVariable(assignment.getAssigned().toString(), true, true);
+				recorded = true;
+			}
+		}
+		if (!recorded)
+			incVariable(assignment.getAssigned().toString(), true);
+		
+		
 		scan(assignment.getAssigned());
 		scan(assignment.getAssignment());
 	}
@@ -489,7 +534,12 @@ public class ExpressionEstimatorVisitor implements CtVisitor {
 
 	@Override
 	public <T> void visitCtVariableAccess(CtVariableAccess<T> variableAccess) {
-		incVariable(variableAccess.getVariable().toString());
+		
+		if (variableAccess.getVariable().getDeclaration() instanceof CtParameter) {
+			incVariable(variableAccess.getVariable().toString(), false, true);
+		} else {
+			incVariable(variableAccess.getVariable().toString());
+		}
 		scan(variableAccess.getVariable());
 	}
 
