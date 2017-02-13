@@ -33,14 +33,12 @@ public class BenchmarkDecisions {
 	}
 
 	public static void main(String[] args) {
-		int size = 10;
-		int inc = 10;
+		int exp = 1;
+		int size = exp;
 		while (size <= MAX_LEVEL) {
 			runForNTimes(size);
-			size += inc;
-			if (size >= 10 * inc) {
-				inc *= 10;
-			}
+			exp++;
+			size = (int) Math.pow(10, exp/10);
 		}
 	}
 
