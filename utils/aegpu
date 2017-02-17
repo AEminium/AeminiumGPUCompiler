@@ -2,4 +2,4 @@
 
 GPUCPATH="$(dirname $0)/.."
 
-java -cp bin:$GPUCPATH/lib/javacl-1.0.0-RC1-shaded.jar:$GPUCPATH/lib/AeminiumGPU.jar $1
+java -Xmx8G -cp bin:$GPUCPATH/lib/javacl-1.0.0-RC1-shaded.jar:$GPUCPATH/lib/AeminiumGPU.jar $1

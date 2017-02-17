@@ -33,7 +33,7 @@ public class BenchmarkDecisions {
 	}
 
 	public static void main(String[] args) {
-		int exp = 1;
+		int exp = 10;
 		int size = exp;
 		while (size <= MAX_LEVEL) {
 			runForNTimes(size);
@@ -233,7 +233,7 @@ public class BenchmarkDecisions {
 
 	private static void sleep() {
 		try {
-			Thread.sleep(50);
+			Thread.sleep(500);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
